@@ -1,0 +1,341 @@
+{
+  "by_variant": {
+    "gaussian/0.6": {
+      "N1": {
+        "passed": 20,
+        "total": 20
+      },
+      "N2": {
+        "passed": 20,
+        "total": 20
+      },
+      "S1": {
+        "passed": 80,
+        "total": 80
+      },
+      "S2": {
+        "passed": 14,
+        "total": 20
+      },
+      "S3": {
+        "passed": 80,
+        "total": 80
+      },
+      "S4": {
+        "passed": 11,
+        "total": 20
+      }
+    },
+    "gaussian/0.8": {
+      "N1": {
+        "passed": 20,
+        "total": 20
+      },
+      "N2": {
+        "passed": 20,
+        "total": 20
+      },
+      "S1": {
+        "passed": 80,
+        "total": 80
+      },
+      "S2": {
+        "passed": 14,
+        "total": 20
+      },
+      "S3": {
+        "passed": 80,
+        "total": 80
+      },
+      "S4": {
+        "passed": 11,
+        "total": 20
+      }
+    },
+    "gaussian/1.2": {
+      "N1": {
+        "passed": 20,
+        "total": 20
+      },
+      "N2": {
+        "passed": 20,
+        "total": 20
+      },
+      "S1": {
+        "passed": 80,
+        "total": 80
+      },
+      "S2": {
+        "passed": 14,
+        "total": 20
+      },
+      "S3": {
+        "passed": 80,
+        "total": 80
+      },
+      "S4": {
+        "passed": 11,
+        "total": 20
+      }
+    },
+    "student_t/0.6": {
+      "N1": {
+        "passed": 20,
+        "total": 20
+      },
+      "N2": {
+        "passed": 20,
+        "total": 20
+      },
+      "S1": {
+        "passed": 80,
+        "total": 80
+      },
+      "S2": {
+        "passed": 11,
+        "total": 20
+      },
+      "S3": {
+        "passed": 80,
+        "total": 80
+      },
+      "S4": {
+        "passed": 15,
+        "total": 20
+      }
+    },
+    "student_t/0.8": {
+      "N1": {
+        "passed": 20,
+        "total": 20
+      },
+      "N2": {
+        "passed": 20,
+        "total": 20
+      },
+      "S1": {
+        "passed": 80,
+        "total": 80
+      },
+      "S2": {
+        "passed": 11,
+        "total": 20
+      },
+      "S3": {
+        "passed": 80,
+        "total": 80
+      },
+      "S4": {
+        "passed": 15,
+        "total": 20
+      }
+    },
+    "student_t/1.2": {
+      "N1": {
+        "passed": 20,
+        "total": 20
+      },
+      "N2": {
+        "passed": 20,
+        "total": 20
+      },
+      "S1": {
+        "passed": 80,
+        "total": 80
+      },
+      "S2": {
+        "passed": 11,
+        "total": 20
+      },
+      "S3": {
+        "passed": 80,
+        "total": 80
+      },
+      "S4": {
+        "passed": 15,
+        "total": 20
+      }
+    }
+  },
+  "cases": 120,
+  "configHash": "03632b3d13fbcc888a5bed3511939694989ed8a72c9e594c230035279bc2d7e0",
+  "coverage": {
+    "C1": {
+      "physiological_change": {
+        "mean": 1.0,
+        "min": 1.0
+      },
+      "radiation": {
+        "mean": 1.0,
+        "min": 1.0
+      },
+      "sleep_alertness": {
+        "mean": 1.0,
+        "min": 1.0
+      }
+    },
+    "C2": {
+      "physiological_change": {
+        "mean": 1.0,
+        "min": 1.0
+      },
+      "radiation": {
+        "mean": 1.0,
+        "min": 1.0
+      },
+      "sleep_alertness": {
+        "mean": 1.0,
+        "min": 1.0
+      }
+    },
+    "C3": {
+      "physiological_change": {
+        "mean": 1.0,
+        "min": 1.0
+      },
+      "radiation": {
+        "mean": 1.0,
+        "min": 1.0
+      },
+      "sleep_alertness": {
+        "mean": 1.0,
+        "min": 1.0
+      }
+    },
+    "C4": {
+      "physiological_change": {
+        "mean": 0.9722222222222219,
+        "min": 0.9722222222222222
+      },
+      "radiation": {
+        "mean": 1.0,
+        "min": 1.0
+      },
+      "sleep_alertness": {
+        "mean": 0.999861111111111,
+        "min": 0.9944444444444445
+      }
+    }
+  },
+  "m5_info_coverage": {
+    "C1": {
+      "mean": 0.9995833333333333,
+      "min": 0.9944444444444445
+    },
+    "C2": {
+      "mean": 0.999861111111111,
+      "min": 0.9944444444444445
+    },
+    "C3": {
+      "mean": 0.9998611111111111,
+      "min": 0.9944444444444445
+    },
+    "C4": {
+      "mean": 0.0,
+      "min": 0.0
+    }
+  },
+  "metrics": {
+    "physiological_change": {
+      "day_rate_ci95": [
+        1.5021306818181819,
+        3.302645596590908
+      ],
+      "days_per100": 2.272727272727273,
+      "episode_rate_ci95": [
+        0.6107954545454546,
+        1.1434659090909092
+      ],
+      "episodes_per100": 0.8522727272727273,
+      "evaluable_days": 84480,
+      "false_days": 1920,
+      "false_episodes": 720
+    },
+    "radiation": {
+      "day_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "days_per100": 0.0,
+      "episode_rate_ci95": [
+        0.0,
+        0.0
+      ],
+      "episodes_per100": 0.0,
+      "evaluable_days": 78720,
+      "false_days": 0,
+      "false_episodes": 0
+    },
+    "sleep_alertness": {
+      "day_rate_ci95": [
+        0.3576487252124646,
+        0.6941874467170679
+      ],
+      "days_per100": 0.5170154750522328,
+      "episode_rate_ci95": [
+        0.30809547418372407,
+        0.5736543909348442
+      ],
+      "episodes_per100": 0.43556783172208646,
+      "evaluable_days": 84717,
+      "false_days": 438,
+      "false_episodes": 369
+    }
+  },
+  "n1_act_days": 0,
+  "quiet_act_indicators": 0,
+  "quiet_metrics": {
+    "physiological_change": {
+      "evaluable_days": 28800,
+      "false_days": 390,
+      "false_episodes": 173
+    },
+    "radiation": {
+      "evaluable_days": 28800,
+      "false_days": 0,
+      "false_episodes": 0
+    },
+    "sleep_alertness": {
+      "evaluable_days": 28799,
+      "false_days": 148,
+      "false_episodes": 125
+    }
+  },
+  "quiet_unique_cases": 40,
+  "s2_detection_rate_ci95": [
+    0.45,
+    0.775
+  ],
+  "scenarios": {
+    "N1": {
+      "failed": 0,
+      "passed": 120,
+      "total": 120
+    },
+    "N2": {
+      "failed": 0,
+      "passed": 120,
+      "total": 120
+    },
+    "S1": {
+      "failed": 0,
+      "passed": 480,
+      "total": 480
+    },
+    "S2": {
+      "failed": 45,
+      "passed": 75,
+      "total": 120
+    },
+    "S3": {
+      "failed": 0,
+      "passed": 480,
+      "total": 480
+    },
+    "S4": {
+      "failed": 42,
+      "passed": 78,
+      "total": 120
+    }
+  }
+}

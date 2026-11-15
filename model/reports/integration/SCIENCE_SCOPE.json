@@ -1,0 +1,27 @@
+{
+  "configHash": "03632b3d13fbcc888a5bed3511939694989ed8a72c9e594c230035279bc2d7e0",
+  "originalFreeze": "model/reports/holdout/holdout-2/FREEZE.json",
+  "files": {
+    "model/spacehealth_model/baseline/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/baseline/fixed.py": "0e619b86416bc5cb493db0a207e1e775b58c4c8c576b674a92762d73917005dd",
+    "model/spacehealth_model/config.py": "a3fc002fc9a35c2ea2c253e23807f224c3804a2176050c67b6e1826243e351ec",
+    "model/spacehealth_model/data_sources/__init__.py": "bc05a42eeaa941c071fc10c8029c13d804cb166a06a4287e4b1a8acf6287812e",
+    "model/spacehealth_model/data_sources/donki.py": "634db3efb9b0a28cbab9646f70bb6bfd95123eb64dec31230b88a3c113e89076",
+    "model/spacehealth_model/detectors/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/detectors/candidates.py": "72821ef9364814bde93767329ac64a7914b4fd8dd74f75f69b0577f08c749345",
+    "model/spacehealth_model/evaluate/frozen.py": "8e6d5e0bce91020de4e45df6e1a6df7b15e109bfefa41ebbfb91aa2b65bcdf92",
+    "model/spacehealth_model/modules/radiation.py": "5a96ca083c1726e512aea4129f855c93d5df8725fb4b6a9e42034baf10f72055",
+    "model/spacehealth_model/modules/sleep.py": "9de2d74a74f15d54e5a4920eef0e1a597277cd59f517db572741aa29e87bee5e",
+    "model/spacehealth_model/sim/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/sim/generate.py": "f4dbf2376d4597f9f53bdecce16010534e3eee5938aad4a7a4c93ec011e8564f",
+    "model/spacehealth_model/sim/radiation.py": "c69677877923922b697f8cebe0b342bdedeaf01dd6dd2d2a87ecb1666b8e2b23",
+    "model/spacehealth_model/sim/space_weather.py": "005589b8d03852e1263d51b8f3564521cb9a9961695e33c6a23bb2de9a00c16c"
+  },
+  "physiologicalAst": {
+    "evaluate": "050925607b2d77c96c6796b5e0ce33984ff339cb3129e3dd5c11b62e5096fcbf",
+    "production_results": "a2e945d85cac9a4fdb55a596af86548603daa30fc53598b3d2fc956865ca1b94",
+    "production_decision_prefix": "11d510d2e899048df4e0feefbbe7ade47fbbffc077fa961d1d91cabf9abb96a8",
+    "production_status_expression": "5f559b9910b01e3d9f4dc80470606330235a44d4b201d7055a3fdd93d9e3bbdc"
+  },
+  "reason": "TASK-013 authorizes presentation/export changes only; decisions/status expression and original scientific code remain frozen."
+}

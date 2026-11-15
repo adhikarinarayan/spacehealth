@@ -1,0 +1,70 @@
+{
+  "task": "TASK-009",
+  "command": "python -m spacehealth_model.run --seed 0 --out out/",
+  "spe_event_timing_source": "NASA DONKI SEP (CCMC) — GOES onsets 2017-09-05/06/10, observed near Earth; timing replayed, dose from Zeitlin2013 Table 1; file sha256 73758df3e43c2cda3c64c0350728aad4a926eba6a15396f0296969b1c63bf227",
+  "mapped_onsets": [
+    {
+      "missionDay": 72,
+      "timeHoursFromDayStart": 0.5,
+      "onsetUtc": "2017-09-05T00:30:00Z",
+      "sepIDs": [
+        "2017-09-05T00:30:00-SEP-001"
+      ]
+    },
+    {
+      "missionDay": 73,
+      "timeHoursFromDayStart": 23.75,
+      "onsetUtc": "2017-09-06T23:45:00Z",
+      "sepIDs": [
+        "2017-09-06T23:45:00-SEP-001"
+      ]
+    },
+    {
+      "missionDay": 77,
+      "timeHoursFromDayStart": 16.416666666666668,
+      "onsetUtc": "2017-09-10T16:25:00Z",
+      "sepIDs": [
+        "2017-09-10T16:25:00-SEP-001",
+        "2017-09-10T16:45:00-SEP-001"
+      ]
+    }
+  ],
+  "first_act_per_crew": {
+    "C1": {
+      "firstActDay": 72,
+      "firstActHour": 0.5
+    },
+    "C2": {
+      "firstActDay": 72,
+      "firstActHour": 0.5
+    },
+    "C3": {
+      "firstActDay": 72,
+      "firstActHour": 0.5
+    },
+    "C4": {
+      "firstActDay": 72,
+      "firstActHour": 0.5
+    }
+  },
+  "observed_mission_dose_msv": {
+    "C1": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    },
+    "C2": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    },
+    "C3": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    },
+    "C4": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    }
+  },
+  "configHash": "f73665e0518f9639b490db080cd49b457e8a327a3cd9fd231b3b4c3f2b9f6590",
+  "pytest": "133 passed; only unchanged test_s2_flag_by_symptom_day failed"
+}

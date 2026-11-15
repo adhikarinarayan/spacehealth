@@ -1,0 +1,32 @@
+model/.venv/
+__pycache__/
+.pytest_cache/
+node_modules/
+dist/
+*.local
+research/data/raw/stanford_covid_wearables_mishra2020/*.zip
+# Papers are not redistributed (several are paywalled); see research/sources.md + research/checksums.sha256
+research/papers/
+model/out/
+
+# Generated mission export (reproducible with the model CLI)
+model/out/
+# Shareable report PDFs (kept local, not committed)
+docs/reports/*.pdf
+
+# Raw Codex session logs are kept locally only (D23)
+handoffs/logs/
+
+# Local-only process drafts (not published)
+docs/history/
+handoffs/reports/COORDINATION-interactive-session.md
+handoffs/reports/TASK-001.md
+
+# Submission drafts (video script, project page) are kept local only
+docs/submission/
+
+# Planning documents kept local only
+SpaceHealth — *.md
+Instructions.txt
+Discussion.md
+plan.md

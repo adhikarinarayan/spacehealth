@@ -1,0 +1,16 @@
+"""Frozen configuration loading; no mutable research files used at inference."""
+import copy
+import hashlib
+from pathlib import Path
+import yaml
+from ..config import ROOT
+DEFAULT=ROOT/'model/configs/frozen_v1.yaml'
+
+def read_frozen(path=DEFAULT):
+    path=Path(path);raw=path.read_bytes();document=yaml.safe_load(raw)
+    config=copy.deepcopy(document['research'])
+    digest=hashlib.sha256(raw).hexdigest()
+    config['configHash']=digest;config['_frozenHash']=digest
+    config['_production']=document['detectors']
+    config['inputSources']=copy.deepcopy(document['sourceInputs'])
+    return config,document,digest

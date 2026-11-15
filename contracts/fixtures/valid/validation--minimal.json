@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "0.2.0",
+  "simulated": true,
+  "modelId": "fixture",
+  "configHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "seedSet": "dev",
+  "results": [
+    {
+      "scenarioId": "S1",
+      "crewId": "C1",
+      "moduleId": null,
+      "passed": true,
+      "passRule": "Fixture structural validation only",
+      "onsetDay": null,
+      "symptomDay": null,
+      "firstWatchDay": null,
+      "firstActDay": null,
+      "delayVsOnsetDays": null,
+      "delayVsSymptomDays": null,
+      "routineFalseAlerts": 0,
+      "evaluableCrewDays": 0,
+      "falseAlertsPer100CrewDays": null,
+      "unknownDays": 0,
+      "notes": "No scientific evaluation performed."
+    }
+  ]
+}

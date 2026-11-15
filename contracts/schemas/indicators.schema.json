@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spacehealth.local/contracts/indicators.schema.json",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "0.2.0"
+    },
+    "simulated": {
+      "const": true
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "configHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "missionFile": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "indicators": {
+      "type": "array",
+      "items": {
+        "$ref": "indicator.schema.json"
+      },
+      "description": "One indicator per crewId, missionDay and moduleId. Composite-key uniqueness is enforced by Pydantic and Zod."
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "simulated",
+    "modelId",
+    "configHash",
+    "missionFile",
+    "indicators"
+  ],
+  "additionalProperties": false
+}

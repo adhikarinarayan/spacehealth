@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spacehealth.local/contracts/cards.schema.json",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "0.2.0"
+    },
+    "cards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "nominal",
+              "watch",
+              "act",
+              "unknown"
+            ]
+          },
+          "heading": {
+            "type": "string",
+            "minLength": 1
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uncertainty": {
+            "type": "string",
+            "minLength": 1
+          },
+          "do_now": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "recheck": {
+            "type": "string",
+            "minLength": 1
+          },
+          "onboard_escalation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ground_escalation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "assumption_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "heading",
+          "why",
+          "uncertainty",
+          "do_now",
+          "recheck",
+          "onboard_escalation",
+          "ground_escalation",
+          "source_ids",
+          "assumption_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "source": {
+      "const": "research/cards.yaml"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "source",
+    "cards"
+  ],
+  "additionalProperties": false
+}

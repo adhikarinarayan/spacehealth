@@ -1,0 +1,18 @@
+..............................................F                          [100%]
+=================================== FAILURES ===================================
+_________________________ test_s2_flag_by_symptom_day __________________________
+
+mission = {'schemaVersion': '0.2.0', 'simulated': True, 'generator': 'spacehealth-M1-stage0', 'seed': 0, ...}
+indicators = {'schemaVersion': '0.2.0', 'simulated': True, 'modelId': 'M1-stage0', 'configHash': '9b9a24ec60b8a1f0de1abb8d0ce21502eede71ed0c6aa6a9bf4d67a66408bfa0', ...}
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    def test_s2_flag_by_symptom_day(mission,indicators,config):
+        result=summary(mission,indicators,config)['S2']
+>       assert result['passedBySymptomDay'], f'Synthetic S2 acceptance miss with unchanged research values: {result}'
+E       AssertionError: Synthetic S2 acceptance miss with unchanged research values: {'firstWatchDay': None, 'firstActDay': None, 'firstFlagDay': None, 'passedBySymptomDay': False, 'onsetDay': 40, 'symptomDay': 42, 'endDay': 48}
+E       assert False
+
+tests/test_stage0.py:164: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_stage0.py::test_s2_flag_by_symptom_day - AssertionError: Sy...
+1 failed, 46 passed in 7.65s

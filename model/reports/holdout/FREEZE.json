@@ -1,0 +1,46 @@
+{
+  "createdAt": "2026-11-15T18:35:28.540472+00:00",
+  "configHash": "9662bf1d498a9a729daf84c2dc73c92fcc7c0cd1943764ceaf886251b5289492",
+  "codeHashes": {
+    "model/spacehealth_model/__init__.py": "641fb6929cb6fa6ef44773b4fa680ba52a770491a060ed3e6d9d64f02e3d9aa9",
+    "model/spacehealth_model/baseline/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/baseline/fixed.py": "0e619b86416bc5cb493db0a207e1e775b58c4c8c576b674a92762d73917005dd",
+    "model/spacehealth_model/compare.py": "27f81f1faca66cd58c8b700055b443d57cabdb26a37c210cdadbf5daf7ebc6fe",
+    "model/spacehealth_model/config.py": "a3fc002fc9a35c2ea2c253e23807f224c3804a2176050c67b6e1826243e351ec",
+    "model/spacehealth_model/contracts.py": "48e8c5f6a57a97c0341e2dc3bcafe9687be431b29df2ea3b91f497a944578885",
+    "model/spacehealth_model/data_sources/__init__.py": "bc05a42eeaa941c071fc10c8029c13d804cb166a06a4287e4b1a8acf6287812e",
+    "model/spacehealth_model/data_sources/donki.py": "634db3efb9b0a28cbab9646f70bb6bfd95123eb64dec31230b88a3c113e89076",
+    "model/spacehealth_model/detectors/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/detectors/candidates.py": "72821ef9364814bde93767329ac64a7914b4fd8dd74f75f69b0577f08c749345",
+    "model/spacehealth_model/evaluate/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/evaluate/frozen.py": "023d932b9f424beb8b4db793d76fff99d074812e16e6814f8fd55b3f875c7a47",
+    "model/spacehealth_model/evaluate/holdout.py": "7a1c79f2a10b39b705eed40e041d42e18f143d25c1af9b36a532a1434ffaeee4",
+    "model/spacehealth_model/evaluate/metrics.py": "962abf9c4bcc673ecf2139d10e7638c1178fd1574b3c788d7f89fadcd0daf660",
+    "model/spacehealth_model/evaluate/stage2.py": "334a2f23c3c1bb15da1c615bf677eabb62c457484058c4ac1ba1c45ee136bad7",
+    "model/spacehealth_model/export/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/export/files.py": "1018670f221fe687c462daad0bb0a2ab6cedcddecac490fe1af2cd4c218d93aa",
+    "model/spacehealth_model/export/release.py": "134e23bc1c892193694ae13a52a73102e5e1d2498fd57eb013c4a5c9854b3af5",
+    "model/spacehealth_model/modules/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/modules/physiological.py": "a799a21777261ef1d491d388870ba716a28ecf2ab12e78a00005a1790730adf5",
+    "model/spacehealth_model/modules/radiation.py": "5a96ca083c1726e512aea4129f855c93d5df8725fb4b6a9e42034baf10f72055",
+    "model/spacehealth_model/modules/sleep.py": "9de2d74a74f15d54e5a4920eef0e1a597277cd59f517db572741aa29e87bee5e",
+    "model/spacehealth_model/run.py": "39ae3caf6ae454912350e56df62b5f6625ce583a59a5945e4356a297a7214798",
+    "model/spacehealth_model/sim/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/sim/generate.py": "f4dbf2376d4597f9f53bdecce16010534e3eee5938aad4a7a4c93ec011e8564f",
+    "model/spacehealth_model/sim/radiation.py": "c69677877923922b697f8cebe0b342bdedeaf01dd6dd2d2a87ecb1666b8e2b23",
+    "model/spacehealth_model/sim/space_weather.py": "005589b8d03852e1263d51b8f3564521cb9a9961695e33c6a23bb2de9a00c16c"
+  },
+  "dataHashes": {
+    "research/checksums.sha256": "5b8f387fa4b118bca00f51141524249dd028d249b25c3986ad828499f457f452",
+    "research/data/raw/nasa_donki_sep/SEP_2017-08-15_2017-10-10.json": "73758df3e43c2cda3c64c0350728aad4a926eba6a15396f0296969b1c63bf227"
+  },
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit-learn": "1.9.1",
+    "PyYAML": "6.0.3",
+    "pydantic": "2.14.3"
+  },
+  "devTests": "143 passed before holdout",
+  "protocol": "20 seeds \u00d7 3 effect scales \u00d7 2 noise models; M3 sole status, M5 info-only"
+}

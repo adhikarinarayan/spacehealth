@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spacehealth.local/contracts/crew-member.schema.json",
+  "type": "object",
+  "properties": {
+    "crewId": {
+      "enum": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prior_career_dose_msv": {
+      "anyOf": [
+        {
+          "type": "number",
+          "minimum": 0,
+          "not": {
+            "exclusiveMinimum": 1.7976931348623157e+308
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "crewId",
+    "label",
+    "prior_career_dose_msv"
+  ],
+  "additionalProperties": false
+}

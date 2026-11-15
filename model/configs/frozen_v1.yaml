@@ -1,0 +1,830 @@
+version: frozen-v1-holdout-2-metadata-fix
+primary: M3
+information_only: M5
+detectors:
+  signals:
+  - rhr_bpm
+  - hrv_rmssd_ms
+  - skin_temp_delta_c
+  mission_days:
+  - 1
+  - 180
+  missing_state_policy: reset
+  M3:
+    lambda: 0.2
+    control_sigma: 3.0
+  M5:
+    quantile: 0.99
+    consecutive_days: 2
+    covariance: LedoitWolf
+    assume_centered: false
+research:
+  signals:
+    rhr_bpm:
+      unit: bpm
+      v1: required
+      meaning: nightly resting heart rate (overnight average)
+      sim_person_baseline_range:
+      - 48
+      - 68
+      sim_day_to_day_sd: 1.5
+      label: engineering assumption
+      support: 'Alavi2022 Ext. Data: median overnight-RHR range over 3 months ≈ 3
+        bpm; SD of medians 0.8 (civilians). Supports small within-person noise.'
+      plausible:
+      - 25
+      - 200
+      min_scale: 1.5
+    hrv_rmssd_ms:
+      unit: ms
+      v1: required
+      meaning: nightly RMSSD
+      sim_person_baseline_range:
+      - 30
+      - 90
+      sim_day_to_day_cv: 0.15
+      label: engineering assumption
+      support: None verified; large inter-individual spread is general physiology
+        knowledge (unverified).
+      plausible:
+      - 3
+      - 300
+      min_scale: 5
+      missing_rule: may be missing; never replaced by 0
+    skin_temp_delta_c:
+      unit: degC deviation from personal reference
+      v1: required
+      sim_person_baseline: 0.0
+      sim_day_to_day_sd: 0.15
+      label: engineering assumption
+      support: Li2017 uses skin temperature as a wearable signal; magnitude not yet
+        verified.
+      plausible:
+      - -3
+      - 3
+      min_scale: 0.1
+    sleep_hours:
+      unit: h
+      v1: required
+      sim_person_baseline_range:
+      - 6.0
+      - 7.2
+      sim_day_to_day_sd: 0.6
+      label: evidence-backed (range) / engineering assumption (noise)
+      support: 'FlynnEvans2016: ISS mean sleep 6.4 ± 1.2 h (aligned) vs 5.4 ± 1.4
+        h (misaligned) by actigraphy, n=21. Barger2014: in-flight sleep ≈ 6 h (verify
+        exact figure in text).'
+      plausible:
+      - 0
+      - 16
+      min_scale: 0.3
+    symptoms:
+      type: Symptom[] (contract enum)
+      v1: required
+      z_scored: false
+      rule: categorical; [] with checkin_completed=true means reported none
+    spe_warning:
+      type: boolean (RadiationEvent)
+      v1: required
+      z_scored: false
+      support: 'OCHMO-TB-020: SPE alerting so crew can seek shelter. Timing realism
+        from DONKI SEP events (observed near Earth).'
+    dose_rate_msv_h:
+      unit: mSv/h (RadiationEvent sample)
+      v1: required for storm event
+      sim_background: 1.84/24 ≈ 0.077 mSv/h (Mars cruise GCR)
+      label: evidence-backed
+      support: 'Zeitlin2013: cruise GCR dose-equivalent 1.84 ± 0.33 mSv/day.'
+    daily_dose_msv:
+      unit: mSv/day
+      v1: required
+      derived: integral of dose_rate samples over the day (A8); cumulative = sum of
+        daily
+      sim_background: 1.84
+      label: evidence-backed
+      support: Zeitlin2013 (cruise); NASA-STD-3001 V1C p.45–46 design rate <1.3 mSv/day
+        shielded, ≈1.5 unshielded (solar min). Use 1.84 measured; note vehicle-dependence.
+    prior_career_dose_msv:
+      unit: mSv
+      v1: optional context
+      rule: null = unknown; never assumed 0
+      career_limit: 600
+    pvt_mean_rt_ms:
+      unit: ms
+      v1: optional
+      label: unverified
+      note: PVT-inspired browser test, not a validated instrument
+    pvt_lapses:
+      unit: count
+      v1: optional
+      label: evidence-backed definition
+      support: 'Basner2011: PVT-B lapse = RT > 355 ms'
+    mood_1to5:
+      unit: ordinal
+      v1: optional
+      z_scored: false
+    stress_1to5:
+      unit: ordinal
+      v1: optional
+      z_scored: false
+    exercise_minutes:
+      unit: min/day
+      v1: later
+    co2_ppm:
+      unit: ppm
+      v1: later
+  scenarios:
+    mission:
+      profile: mars_transit_v1
+      crew:
+      - C1
+      - C2
+      - C3
+      - C4
+      preflight_days:
+      - -14
+      - -1
+      mission_days:
+      - 1
+      - 180
+    scenarios:
+      S1:
+        required: true
+        what: quiet mission, normal noise only, all 4 crew
+        truth:
+          moduleId: null
+          onsetDay: null
+        pass: no act without a defined cause; REPORT routine false alerts per 100
+          evaluable crew-days (no fixed threshold — target set by Narayan after toy
+          run)
+      S2:
+        required: true
+        crew: C2
+        moduleId: physiological_change
+        onsetDay: 40
+        symptomDay: 42
+        endDay: 48
+        effects:
+          rhr_bpm: +5.6 bpm (dev); holdout per-person U(3.1, 8.6)
+          hrv_rmssd_ms: -0.5 to -1.0 x own preflight SD
+          skin_temp_delta_c: +0.5 to +1.0 x own preflight SD (nightly)
+          symptoms_from_42:
+          - sore_throat
+          - fatigue
+        pass: watch or act by day 42; evidence lists the shifted signals with directions;
+          text contains no diagnosis ('infection detected' forbidden)
+      S3:
+        required: true
+        crew: all
+        moduleId: radiation
+        onsetDay: 72
+        timeline: 'REPLAYS REAL NASA DONKI SEP ONSETS (D15): GOES-13 (near-Earth)
+          onsets from research/data/raw/nasa_donki_sep/SEP_2017-08-15_2017-10-10.json
+          — 2017-09-05T00:30Z (>10 MeV), 2017-09-06T23:45Z (>10 MeV), 2017-09-10T16:25Z
+          (>100 MeV) / 16:45Z (>10 MeV), grouped into 3 episodes. Offsets preserved;
+          first onset mapped to mission day 72 at 00:30. Each episode starts a warning
+          and a dose-rate pulse (rise ~2 h, exponential decay); the 3 episodes share
+          the 19.5 mSv total equally (A3b). Observed near Earth, not at a Mars-transit
+          vehicle — label as ''timing modelled on''.'
+        event_total_dose_msv: '19.5 mSv over ~9 days, front-loaded (dev). GROUNDED:
+          Zeitlin2013 Table 1, Mar 7-15 2012. Holdout x0.2 / x1 / x5'
+        shelter_effect: 'assumption: sheltered crew dose rate reduced; only if card
+          ''done'' recorded — v1 does NOT model it (keep simple)'
+        pass: radiation act at the first warning sample (same day, before end-of-day);
+          daily and cumulative doses equal independent integration within 1e-6; dose_coverage<1
+          shown as partial
+      S4:
+        required: true
+        crew: C3
+        moduleId: sleep_alertness
+        onsetDay: 95
+        endDay: 101
+        effects:
+          sleep_hours: 5.0-5.4 h for 7 nights
+        pass: watch by day 97; any act requires a documented rule using available
+          inputs (no PVT in v1 ⇒ no act from sleep alone)
+      N1:
+        required: true
+        crew: C1
+        what: isolated RHR rises (+5 to +10 bpm, single days 60, 61, 110) with no
+          other signal change and no symptoms
+        pass: 'no act; never infection wording; watch days allowed but REPORTED as
+          a cost (D14, Narayan: matches Discussion N1 ''no unjustified emergency alert'')'
+      N2:
+        required: true
+        crew: C4
+        what: (a) only 8 valid preflight days for hrv; (b) wearable gap days 120–124
+          (rhr/hrv/temp null); (c) check-in skipped days 130–131
+        pass: unknown where data insufficient/missing; never nominal on missing; no
+          crash; skipped check-in ≠ 'no symptoms'
+    later:
+      S5: slow mood decline — ordinal trend rule, not z-score
+      S6: missed exercise — adherence notice, not bone loss
+  rules:
+    baseline:
+      window: preflight days -14..-1, fixed for the whole mission (no rolling update
+        in v1)
+      center: median(valid preflight values)
+      scale: max(1.4826 * MAD, signals.yaml min_scale)
+      min_valid_days: 10
+      insufficient: fewer than min_valid_days ⇒ that signal is 'insufficient'
+      no_future_data: evaluation on day d uses only data from days ≤ d
+    physiological_change:
+      signals:
+        rhr_bpm: up
+        hrv_rmssd_ms: down
+        skin_temp_delta_c: up
+      shifted_day: signal z beyond ±2.0 in its direction
+      watch: ≥2 signals shifted on each of 2 consecutive days
+      act:
+      - watch AND any red-flag symptom today
+      - ≥2 signals with z beyond ±3.0 on 2 consecutive days
+      symptom_only:
+        red_flag:
+        - fever
+        - shortness_of_breath
+        - chest_pain
+        - fainting
+        - vision_change
+        rule: 'red-flag symptom ⇒ act regardless of signals (card: symptom-escalation);
+          other symptoms with no signal shift ⇒ nominal + ''symptoms logged'' note'
+      unknown: fewer than 2 of the 3 signals evaluable today (missing or insufficient
+        baseline)
+      correlated_note: rhr and hrv come from the same wearable — reason text must
+        not present them as independent confirmations
+      forbidden_words:
+      - infection detected
+      - you have
+      - diagnosis
+      - diagnosed
+      heading_watch: Physiological change
+      heading_act: Physiological change — check symptoms
+    sleep_alertness:
+      signals:
+        sleep_hours: down
+      watch: sleep_hours z ≤ -2.0 on 2 consecutive nights
+      act: 'sum over the last 7 nights of max(0, baseline_sleep_hours - sleep_hours)
+        >= 8.16 h  (extra wakefulness vs own preflight normal ≈ one night of total
+        sleep deprivation). Missing nights are not counted as 0 debt: if <5 of 7 nights
+        valid, act cannot be evaluated (stay watch/unknown).'
+      context_absolute_debt: also compute Van Dongen absolute excess wakefulness sum(max(0,
+        8.16 - sleep_hours)) over 7 nights; show as information only, never as a status
+      unknown: sleep_hours missing today or insufficient baseline
+    radiation:
+      not_baseline_based: true
+      act_warning: any spe_warning=true sample ⇒ act immediately for that crew/day
+        (card radiation-spe-procedure); stays act until warning cleared + 1 day
+      rate_tiers:
+        caution_watch_msv_h: placeholder (configurable)
+        shelter_act_msv_h: placeholder (configurable)
+      watch_budget: prior_career (if known) + mission dose so far + remaining_days
+        × background ≥ 600 mSv
+      integration: trapezoid between consecutive time-stamped samples within the day;
+        dose_coverage = covered hours / 24
+      career_unknown: if prior_career_dose_msv is null, show 'career total unknown
+        — mission dose only'
+      never: 250 mSv is a vehicle design requirement [V1 4031], NOT an alert trigger
+    card_cap:
+      routine_max: 3
+      never_capped:
+      - any act from radiation
+      - red-flag symptom act
+  cards:
+    physiological-change:
+      id: physiological-change
+      status: watch
+      heading: Physiological change
+      why: '{signals} have moved away from your preflight normal for {days} nights
+        in a row.'
+      uncertainty: These changes are nonspecific. Poor sleep, hard exercise, stress
+        or illness can all cause them. This is not a diagnosis.
+      do_now:
+      - Check that your wearable was worn and fitted correctly last night.
+      - Complete today's symptom check-in.
+      recheck: Tomorrow's overnight readings and check-in.
+      onboard_escalation: Tell the onboard CMO if you have symptoms or if this continues
+        for another night.
+      ground_escalation: 'Optional: queue a note for the flight surgeon; replies may
+        be delayed.'
+      source_ids:
+      - Li2017
+      - Mishra2020
+      - Alavi2022
+      assumption_ids:
+      - A2
+      - A6
+      - A7
+    physiological-change-act:
+      id: physiological-change-act
+      status: act
+      heading: Physiological change — check symptoms
+      why: '{signals} have shifted strongly or together with reported symptoms ({symptoms}).'
+      uncertainty: The pattern can occur with illness but does not confirm one.
+      do_now:
+      - Follow the mission-approved symptom assessment procedure.
+      - Contact the onboard CMO today.
+      recheck: As directed by the CMO or the approved procedure.
+      onboard_escalation: Contact the onboard CMO now.
+      ground_escalation: CMO decides whether to message the flight surgeon; message
+        is queued if the link is down.
+      source_ids:
+      - Mishra2020
+      - Alavi2022
+      assumption_ids:
+      - A2
+      - A7
+    symptom-escalation:
+      id: symptom-escalation
+      status: act
+      heading: Symptom needs attention
+      why: You reported {symptoms}.
+      uncertainty: SpaceHealth cannot assess this symptom. A person must.
+      do_now:
+      - Contact the onboard CMO now.
+      - Follow the mission-approved procedure for this symptom.
+      recheck: As directed by the CMO.
+      onboard_escalation: Contact the onboard CMO now.
+      ground_escalation: CMO decides; queued if the link is down.
+      source_ids: []
+      assumption_ids:
+      - A7
+    sleep-short:
+      id: sleep-short
+      status: watch
+      heading: Sleep shorter than your normal
+      why: You slept {hours} h, below your usual range, for {nights} nights.
+      uncertainty: Sleep estimates from a wrist device can be off. This does not measure
+        how alert you are.
+      do_now:
+      - Plan a protected sleep opportunity tonight if the schedule allows.
+      - Consider extra cross-checks on safety-critical tasks today.
+      recheck: Tomorrow's sleep estimate.
+      onboard_escalation: Tell the onboard CMO if you feel impaired or this continues.
+      ground_escalation: 'Optional: queue a schedule note for ground planners.'
+      source_ids:
+      - FlynnEvans2016
+      - Barger2014
+      assumption_ids:
+      - A7
+    sleep-debt:
+      id: sleep-debt
+      status: act
+      heading: Sleep debt building up
+      why: Over the last 7 nights you slept {debt_h} h less than your preflight normal
+        — about one full night of lost sleep.
+      uncertainty: In sleep-restriction studies, alertness kept falling with accumulated
+        sleep loss while people felt only slightly sleepier. How you feel may underestimate
+        the effect.
+      do_now:
+      - Tell the onboard CMO and the commander before starting safety-critical tasks.
+      - Arrange a protected recovery sleep opportunity as soon as the schedule allows.
+      recheck: After the next sleep period.
+      onboard_escalation: Tell the onboard CMO today.
+      ground_escalation: Queue a schedule note for ground planners.
+      source_ids:
+      - VanDongen2003
+      - Belenky2003
+      - NASA-HRP-Sleep2016
+      assumption_ids:
+      - A7
+    radiation-spe-procedure:
+      id: radiation-spe-procedure
+      status: act
+      heading: Solar particle event warning
+      why: A space-weather warning is active{rate_text}.
+      uncertainty: Dose so far today is {dose_today} mSv{partial_text}.
+      do_now:
+      - Follow the mission's approved solar particle event procedure now, including
+        moving to the designated shelter if the procedure says so.
+      - Keep your personal dosimeter on.
+      recheck: When the all-clear is given.
+      onboard_escalation: Confirm with the crew/commander that everyone is following
+        the procedure.
+      ground_escalation: Log for ground; the procedure does not wait for a reply.
+      source_ids:
+      - NASA-STD-3001-V1C
+      - OCHMO-TB-020
+      assumption_ids:
+      - A8
+    radiation-budget:
+      id: radiation-budget
+      status: watch
+      heading: Radiation budget
+      why: Mission dose {mission_dose} mSv{career_text} — {pct}% of the 600 mSv career
+        limit.
+      uncertainty: '{career_unknown_text}Background rate measured on the way to Mars
+        was about 1.84 mSv/day.'
+      do_now:
+      - Review upcoming activities that add dose with the crew.
+      recheck: Weekly.
+      onboard_escalation: Discuss with the commander/CMO if planned activities would
+        exceed the mission plan.
+      ground_escalation: Queue a budget summary for ground.
+      source_ids:
+      - NASA-STD-3001-V1C
+      - Zeitlin2013
+      assumption_ids:
+      - A8
+  stage:
+    sampling:
+      background_interval_hours: 1
+      event_interval_hours: 0.25
+      boundary: nextafter_24
+    profile:
+      label: Mars-class deep-space transit — simulated
+      comms_one_way_delay_min:
+        min: 0
+        max: 20
+      blackouts: []
+      spe_event_timing_source: NASA DONKI SEP (CCMC) — GOES onsets 2017-09-05/06/10,
+        observed near Earth; timing replayed, dose from Zeitlin2013 Table 1; file
+        sha256 73758df3e43c2cda3c64c0350728aad4a926eba6a15396f0296969b1c63bf227
+    s2_shape:
+      ramp_days: 2
+      recovery_days: 2
+    radiation: &id001
+      caution_watch_msv_h: 0.1
+      shelter_act_msv_h: 0.5
+      placeholder: true
+    sleep:
+      policy_source: research/rules.yaml
+    s3_timing: donki
+    s3_legacy:
+      warning_hour: 6
+      rise_hours: 2
+      decay_hours: 24
+    simulation:
+      noise:
+        distribution: gaussian
+        student_t_df: 4
+      S2:
+        rhr_delta_bpm: 5.6
+        hrv_delta_sd_range:
+        - 0.5
+        - 1.0
+        temperature_delta_sd_range:
+        - 0.5
+        - 1.0
+        symptoms:
+        - sore_throat
+        - fatigue
+      S3:
+        total_extra_dose_msv: 19.5
+        duration_days: 9
+        rise_hours: 2
+        decay_hours: 24
+      S4:
+        sleep_hours_range:
+        - 5.0
+        - 5.4
+      N1:
+        rhr_delta_bpm_range:
+        - 5.0
+        - 10.0
+        days:
+        - 60
+        - 61
+        - 110
+      N2:
+        valid_preflight_hrv_days: 8
+        wearable_gap_days:
+        - 120
+        - 124
+        skipped_checkin_days:
+        - 130
+        - 131
+    s3_donki:
+      window_start_utc: '2017-09-04T00:00:00Z'
+      window_end_exclusive_utc: '2017-09-12T00:00:00Z'
+      group_hours: 6
+      expected_episodes: 3
+  watch_count: 2
+  watch_days: 2
+  watch_z: 2.0
+  act_count: 2
+  act_z: 3.0
+  act_days: 2
+  mad_factor: 1.4826
+  configHash: f73665e0518f9639b490db080cd49b457e8a327a3cd9fd231b3b4c3f2b9f6590
+sourceInputs:
+  research/signals.yaml:
+    sha256: 31b352bca78bc7a59849dbe3830e1b7c64cc709bde8152c0470b71df58f015a2
+    text: "# Signal contract table (Discussion §2.1) — research view\n# Owner: Claude\
+      \ (draft) · Verify: Narayan/B · Status: DRAFT v0.1 (Sat 2026-11-14)\n# label:\
+      \ evidence-backed | engineering assumption | unverified\n# sim_* fields are\
+      \ SIMULATION inputs only (realistic fake data). Detection never uses population\
+      \ ranges (except M0 comparator).\n# plausible_* = physical plausibility; outside\
+      \ → model marks dataQuality \"suspect\" (contract v0.1.1).\n\nsignals:\n  rhr_bpm:\n\
+      \    unit: bpm\n    v1: required\n    meaning: nightly resting heart rate (overnight\
+      \ average)\n    sim_person_baseline_range: [48, 68]        # per-crewmember\
+      \ preflight median\n    sim_day_to_day_sd: 1.5                      # within-person\
+      \ nightly noise\n    label: engineering assumption\n    support: \"Alavi2022\
+      \ Ext. Data: median overnight-RHR range over 3 months ≈ 3 bpm; SD of medians\
+      \ 0.8 (civilians). Supports small within-person noise.\"\n    plausible: [25,\
+      \ 200]\n    min_scale: 1.5                              # A6 — floor on robust\
+      \ scale\n  hrv_rmssd_ms:\n    unit: ms\n    v1: required\n    meaning: nightly\
+      \ RMSSD\n    sim_person_baseline_range: [30, 90]\n    sim_day_to_day_cv: 0.15\n\
+      \    label: engineering assumption\n    support: \"None verified; large inter-individual\
+      \ spread is general physiology knowledge (unverified).\"\n    plausible: [3,\
+      \ 300]\n    min_scale: 5\n    missing_rule: \"may be missing; never replaced\
+      \ by 0\"\n  skin_temp_delta_c:\n    unit: degC deviation from personal reference\n\
+      \    v1: required\n    sim_person_baseline: 0.0\n    sim_day_to_day_sd: 0.15\n\
+      \    label: engineering assumption\n    support: \"Li2017 uses skin temperature\
+      \ as a wearable signal; magnitude not yet verified.\"\n    plausible: [-3, 3]\n\
+      \    min_scale: 0.1\n  sleep_hours:\n    unit: h\n    v1: required\n    sim_person_baseline_range:\
+      \ [6.0, 7.2]\n    sim_day_to_day_sd: 0.6\n    label: evidence-backed (range)\
+      \ / engineering assumption (noise)\n    support: \"FlynnEvans2016: ISS mean\
+      \ sleep 6.4 ± 1.2 h (aligned) vs 5.4 ± 1.4 h (misaligned) by actigraphy, n=21.\
+      \ Barger2014: in-flight sleep ≈ 6 h (verify exact figure in text).\"\n    plausible:\
+      \ [0, 16]\n    min_scale: 0.3\n  symptoms:\n    type: Symptom[] (contract enum)\n\
+      \    v1: required\n    z_scored: false\n    rule: \"categorical; [] with checkin_completed=true\
+      \ means reported none\"\n  spe_warning:\n    type: boolean (RadiationEvent)\n\
+      \    v1: required\n    z_scored: false\n    support: \"OCHMO-TB-020: SPE alerting\
+      \ so crew can seek shelter. Timing realism from DONKI SEP events (observed near\
+      \ Earth).\"\n  dose_rate_msv_h:\n    unit: mSv/h (RadiationEvent sample)\n \
+      \   v1: required for storm event\n    sim_background: \"1.84/24 ≈ 0.077 mSv/h\
+      \ (Mars cruise GCR)\"\n    label: evidence-backed\n    support: \"Zeitlin2013:\
+      \ cruise GCR dose-equivalent 1.84 ± 0.33 mSv/day.\"\n  daily_dose_msv:\n   \
+      \ unit: mSv/day\n    v1: required\n    derived: \"integral of dose_rate samples\
+      \ over the day (A8); cumulative = sum of daily\"\n    sim_background: 1.84\n\
+      \    label: evidence-backed\n    support: \"Zeitlin2013 (cruise); NASA-STD-3001\
+      \ V1C p.45–46 design rate <1.3 mSv/day shielded, ≈1.5 unshielded (solar min).\
+      \ Use 1.84 measured; note vehicle-dependence.\"\n  prior_career_dose_msv:\n\
+      \    unit: mSv\n    v1: optional context\n    rule: \"null = unknown; never\
+      \ assumed 0\"\n    career_limit: 600   # evidence-backed, NASA-STD-3001 V1C\
+      \ [V1 4030] p.40\n  pvt_mean_rt_ms: {unit: ms, v1: optional, label: unverified,\
+      \ note: \"PVT-inspired browser test, not a validated instrument\"}\n  pvt_lapses:\
+      \ {unit: count, v1: optional, label: evidence-backed definition, support: \"\
+      Basner2011: PVT-B lapse = RT > 355 ms\"}\n  mood_1to5: {unit: ordinal, v1: optional,\
+      \ z_scored: false}\n  stress_1to5: {unit: ordinal, v1: optional, z_scored: false}\n\
+      \  exercise_minutes: {unit: min/day, v1: later}\n  co2_ppm: {unit: ppm, v1:\
+      \ later}\n\nrenamed_from_old_docs: {rhr: rhr_bpm, hrv_rmssd: hrv_rmssd_ms, skin_temp_delta:\
+      \ skin_temp_delta_c, sleep_h: sleep_hours, pvt_rt_ms: pvt_mean_rt_ms, dose_msv:\
+      \ daily_dose_msv, mood: mood_1to5, stress: stress_1to5, exercise_min: exercise_minutes}\n"
+  research/scenarios.yaml:
+    sha256: eaa0b4d6fc45b62a1fc4fc804379b56d60ad9dd9ef1d363c3dc3cee30756c48e
+    text: "# v1 scenario set (Discussion §2.2) — DRAFT v0.1 · Owner: Claude · Verify:\
+      \ Narayan/B\n# All effect sizes are SIMULATION ASSUMPTIONS (A2, A11) unless\
+      \ a source is given.\n# onset / symptom / detection / recovery are separate\
+      \ fields; a symptom day does not prove an infection existed earlier.\nmission:\
+      \ {profile: mars_transit_v1, crew: [C1, C2, C3, C4], preflight_days: [-14, -1],\
+      \ mission_days: [1, 180]}\n\nscenarios:\n  S1:\n    required: true\n    what:\
+      \ quiet mission, normal noise only, all 4 crew\n    truth: {moduleId: null,\
+      \ onsetDay: null}\n    pass: \"no act without a defined cause; REPORT routine\
+      \ false alerts per 100 evaluable crew-days (no fixed threshold — target set\
+      \ by Narayan after toy run)\"\n  S2:\n    required: true\n    crew: C2\n   \
+      \ moduleId: physiological_change\n    onsetDay: 40\n    symptomDay: 42\n   \
+      \ endDay: 48\n    effects:   # ramp in over 2 days, hold, recover by day 48\n\
+      \      rhr_bpm: \"+5.6 bpm (dev); holdout per-person U(3.1, 8.6)\"       # GROUNDED:\
+      \ Mishra2020 Supp. Table 14 (grounding.md §1)\n      hrv_rmssd_ms: \"-0.5 to\
+      \ -1.0 x own preflight SD\"                 # DIRECTION-GROUNDED: Natarajan2020,\
+      \ Mason2022\n      skin_temp_delta_c: \"+0.5 to +1.0 x own preflight SD (nightly)\"\
+      \  # DIRECTION-GROUNDED: Mason2022, Smarr2020\n      symptoms_from_42: [sore_throat,\
+      \ fatigue]\n    pass: \"watch or act by day 42; evidence lists the shifted signals\
+      \ with directions; text contains no diagnosis ('infection detected' forbidden)\"\
+      \n  S3:\n    required: true\n    crew: all\n    moduleId: radiation\n    onsetDay:\
+      \ 72\n    timeline: \"REPLAYS REAL NASA DONKI SEP ONSETS (D15): GOES-13 (near-Earth)\
+      \ onsets from research/data/raw/nasa_donki_sep/SEP_2017-08-15_2017-10-10.json\
+      \ — 2017-09-05T00:30Z (>10 MeV), 2017-09-06T23:45Z (>10 MeV), 2017-09-10T16:25Z\
+      \ (>100 MeV) / 16:45Z (>10 MeV), grouped into 3 episodes. Offsets preserved;\
+      \ first onset mapped to mission day 72 at 00:30. Each episode starts a warning\
+      \ and a dose-rate pulse (rise ~2 h, exponential decay); the 3 episodes share\
+      \ the 19.5 mSv total equally (A3b). Observed near Earth, not at a Mars-transit\
+      \ vehicle — label as 'timing modelled on'.\"\n    event_total_dose_msv: \"19.5\
+      \ mSv over ~9 days, front-loaded (dev). GROUNDED: Zeitlin2013 Table 1, Mar 7-15\
+      \ 2012. Holdout x0.2 / x1 / x5\"\n    shelter_effect: \"assumption: sheltered\
+      \ crew dose rate reduced; only if card 'done' recorded — v1 does NOT model it\
+      \ (keep simple)\"\n    pass: \"radiation act at the first warning sample (same\
+      \ day, before end-of-day); daily and cumulative doses equal independent integration\
+      \ within 1e-6; dose_coverage<1 shown as partial\"\n  S4:\n    required: true\n\
+      \    crew: C3\n    moduleId: sleep_alertness\n    onsetDay: 95\n    endDay:\
+      \ 101\n    effects: {sleep_hours: \"5.0-5.4 h for 7 nights\"}  # GROUNDED: FlynnEvans2016\
+      \ misaligned 5.4 h; NASA Sleep Evidence Report 2016\n    pass: \"watch by day\
+      \ 97; any act requires a documented rule using available inputs (no PVT in v1\
+      \ ⇒ no act from sleep alone)\"\n  N1:\n    required: true\n    crew: C1\n  \
+      \  what: \"isolated RHR rises (+5 to +10 bpm, single days 60, 61, 110) with\
+      \ no other signal change and no symptoms\"  # GROUNDED magnitude: Quer2020 (20%\
+      \ have a week with >=10 bpm swing)\n    pass: \"no act; never infection wording;\
+      \ watch days allowed but REPORTED as a cost (D14, Narayan: matches Discussion\
+      \ N1 'no unjustified emergency alert')\"\n  N2:\n    required: true\n    crew:\
+      \ C4\n    what: \"(a) only 8 valid preflight days for hrv; (b) wearable gap\
+      \ days 120–124 (rhr/hrv/temp null); (c) check-in skipped days 130–131\"\n  \
+      \  pass: \"unknown where data insufficient/missing; never nominal on missing;\
+      \ no crash; skipped check-in ≠ 'no symptoms'\"\nlater:\n  S5: \"slow mood decline\
+      \ — ordinal trend rule, not z-score\"\n  S6: \"missed exercise — adherence notice,\
+      \ not bone loss\"\n"
+  research/rules.yaml:
+    sha256: 89661a040265b3e48e830626ad701050591b09eafe53d5198e4be3a90ca7bc38
+    text: "# Module detection rules (Discussion §2.3) — DRAFT v0.1 · Owner: Claude\
+      \ · Verify: Narayan/B · Implement: Codex\n# These are the M1 default rules.\
+      \ Model experiments may change numbers; every change is logged in model/EXPERIMENT_LOG.md\
+      \ and DECISIONS.md.\n\nbaseline:   # Discussion §1.4\n  window: preflight days\
+      \ -14..-1, fixed for the whole mission (no rolling update in v1)\n  center:\
+      \ median(valid preflight values)\n  scale: max(1.4826 * MAD, signals.yaml min_scale)\n\
+      \  min_valid_days: 10          # A6 engineering assumption; Alavi2022 Ext. Data:\
+      \ baseline stable after ~7 nights for >80% (supports)\n  insufficient: \"fewer\
+      \ than min_valid_days ⇒ that signal is 'insufficient'\"\n  no_future_data: \"\
+      evaluation on day d uses only data from days ≤ d\"\n\nphysiological_change:\n\
+      \  signals: {rhr_bpm: up, hrv_rmssd_ms: down, skin_temp_delta_c: up}\n  shifted_day:\
+      \ \"signal z beyond ±2.0 in its direction\"                  # A7\n  watch:\
+      \ \"≥2 signals shifted on each of 2 consecutive days\"              # A7\n \
+      \ act:\n    - \"watch AND any red-flag symptom today\"\n    - \"≥2 signals with\
+      \ z beyond ±3.0 on 2 consecutive days\"             # A7\n  symptom_only:\n\
+      \    red_flag: [fever, shortness_of_breath, chest_pain, fainting, vision_change]\
+      \   # NEEDS B REVIEW\n    rule: \"red-flag symptom ⇒ act regardless of signals\
+      \ (card: symptom-escalation); other symptoms with no signal shift ⇒ nominal\
+      \ + 'symptoms logged' note\"\n  unknown: \"fewer than 2 of the 3 signals evaluable\
+      \ today (missing or insufficient baseline)\"\n  correlated_note: \"rhr and hrv\
+      \ come from the same wearable — reason text must not present them as independent\
+      \ confirmations\"\n  forbidden_words: [\"infection detected\", \"you have\"\
+      , \"diagnosis\", \"diagnosed\"]\n  heading_watch: \"Physiological change\"\n\
+      \  heading_act: \"Physiological change — check symptoms\"\n\nsleep_alertness:\n\
+      \  signals: {sleep_hours: down}\n  watch: \"sleep_hours z ≤ -2.0 on 2 consecutive\
+      \ nights\"                 # A7\n  act: \"sum over the last 7 nights of max(0,\
+      \ baseline_sleep_hours - sleep_hours) >= 8.16 h  (extra wakefulness vs own preflight\
+      \ normal ≈ one night of total sleep deprivation). Missing nights are not counted\
+      \ as 0 debt: if <5 of 7 nights valid, act cannot be evaluated (stay watch/unknown).\"\
+      \   # GROUNDED magnitude: VanDongen2003 (lapses ~linear in cumulative wake >15.84\
+      \ h/day; 24-15.84 = 8.16 h); relative-to-baseline application = R3 (Narayan)\n\
+      \  context_absolute_debt: \"also compute Van Dongen absolute excess wakefulness\
+      \ sum(max(0, 8.16 - sleep_hours)) over 7 nights; show as information only, never\
+      \ as a status\"\n  unknown: \"sleep_hours missing today or insufficient baseline\"\
+      \n\nradiation:\n  not_baseline_based: true\n  act_warning: \"any spe_warning=true\
+      \ sample ⇒ act immediately for that crew/day (card radiation-spe-procedure);\
+      \ stays act until warning cleared + 1 day\"\n  rate_tiers:   # STRUCTURE grounded\
+      \ (NASA Artemis II two-tier caution/shelter; HERA seminar). NUMBERS NOT PUBLIC\
+      \ → mission-configurable placeholders, labelled as such in UI\n    caution_watch_msv_h:\
+      \ \"placeholder (configurable)\"\n    shelter_act_msv_h: \"placeholder (configurable)\"\
+      \n  watch_budget: \"prior_career (if known) + mission dose so far + remaining_days\
+      \ × background ≥ 600 mSv\"   # GROUNDED: [V1 4030]; Zeitlin2013; Hassler2014\n\
+      \  integration: \"trapezoid between consecutive time-stamped samples within\
+      \ the day; dose_coverage = covered hours / 24\"   # A8\n  career_unknown: \"\
+      if prior_career_dose_msv is null, show 'career total unknown — mission dose\
+      \ only'\"\n  never: \"250 mSv is a vehicle design requirement [V1 4031], NOT\
+      \ an alert trigger\"\n\ncard_cap:\n  routine_max: 3\n  never_capped: [\"any\
+      \ act from radiation\", \"red-flag symptom act\"]\n"
+  research/cards.yaml:
+    sha256: 1139cc156ea17d100aa3462ffd52a39b60a08cbef6b3b2927c2fdaf7d2543e9d
+    text: "# Action cards (Discussion §2.4 template) — DRAFT v0.1 · Owner: Claude\
+      \ · MUST be verified by Narayan/B before demo\n# Rendered verbatim by the dashboard.\
+      \ No diagnoses. Procedural steps point to mission-approved procedures; we do\
+      \ not invent medical treatment.\n# Mission profile: Mars-class transit (D10)\
+      \ — ground replies may take up to ~40 min round trip or be unavailable in blackout.\n\
+      \ncards:\n  - id: physiological-change\n    status: watch\n    heading: Physiological\
+      \ change\n    why: \"{signals} have moved away from your preflight normal for\
+      \ {days} nights in a row.\"\n    uncertainty: \"These changes are nonspecific.\
+      \ Poor sleep, hard exercise, stress or illness can all cause them. This is not\
+      \ a diagnosis.\"\n    do_now:\n      - \"Check that your wearable was worn and\
+      \ fitted correctly last night.\"\n      - \"Complete today's symptom check-in.\"\
+      \n    recheck: \"Tomorrow's overnight readings and check-in.\"\n    onboard_escalation:\
+      \ \"Tell the onboard CMO if you have symptoms or if this continues for another\
+      \ night.\"\n    ground_escalation: \"Optional: queue a note for the flight surgeon;\
+      \ replies may be delayed.\"\n    source_ids: [Li2017, Mishra2020, Alavi2022]\n\
+      \    assumption_ids: [A2, A6, A7]\n\n  - id: physiological-change-act\n    status:\
+      \ act\n    heading: Physiological change — check symptoms\n    why: \"{signals}\
+      \ have shifted strongly or together with reported symptoms ({symptoms}).\"\n\
+      \    uncertainty: \"The pattern can occur with illness but does not confirm\
+      \ one.\"\n    do_now:\n      - \"Follow the mission-approved symptom assessment\
+      \ procedure.\"\n      - \"Contact the onboard CMO today.\"\n    recheck: \"\
+      As directed by the CMO or the approved procedure.\"\n    onboard_escalation:\
+      \ \"Contact the onboard CMO now.\"\n    ground_escalation: \"CMO decides whether\
+      \ to message the flight surgeon; message is queued if the link is down.\"\n\
+      \    source_ids: [Mishra2020, Alavi2022]\n    assumption_ids: [A2, A7]\n\n \
+      \ - id: symptom-escalation\n    status: act\n    heading: Symptom needs attention\n\
+      \    why: \"You reported {symptoms}.\"\n    uncertainty: \"SpaceHealth cannot\
+      \ assess this symptom. A person must.\"\n    do_now:\n      - \"Contact the\
+      \ onboard CMO now.\"\n      - \"Follow the mission-approved procedure for this\
+      \ symptom.\"\n    recheck: \"As directed by the CMO.\"\n    onboard_escalation:\
+      \ \"Contact the onboard CMO now.\"\n    ground_escalation: \"CMO decides; queued\
+      \ if the link is down.\"\n    source_ids: []\n    assumption_ids: [A7]\n\n \
+      \ - id: sleep-short\n    status: watch\n    heading: Sleep shorter than your\
+      \ normal\n    why: \"You slept {hours} h, below your usual range, for {nights}\
+      \ nights.\"\n    uncertainty: \"Sleep estimates from a wrist device can be off.\
+      \ This does not measure how alert you are.\"\n    do_now:\n      - \"Plan a\
+      \ protected sleep opportunity tonight if the schedule allows.\"\n      - \"\
+      Consider extra cross-checks on safety-critical tasks today.\"\n    recheck:\
+      \ \"Tomorrow's sleep estimate.\"\n    onboard_escalation: \"Tell the onboard\
+      \ CMO if you feel impaired or this continues.\"\n    ground_escalation: \"Optional:\
+      \ queue a schedule note for ground planners.\"\n    source_ids: [FlynnEvans2016,\
+      \ Barger2014]\n    assumption_ids: [A7]\n\n  - id: sleep-debt\n    status: act\n\
+      \    heading: Sleep debt building up\n    why: \"Over the last 7 nights you\
+      \ slept {debt_h} h less than your preflight normal — about one full night of\
+      \ lost sleep.\"\n    uncertainty: \"In sleep-restriction studies, alertness\
+      \ kept falling with accumulated sleep loss while people felt only slightly sleepier.\
+      \ How you feel may underestimate the effect.\"\n    do_now:\n      - \"Tell\
+      \ the onboard CMO and the commander before starting safety-critical tasks.\"\
+      \n      - \"Arrange a protected recovery sleep opportunity as soon as the schedule\
+      \ allows.\"\n    recheck: \"After the next sleep period.\"\n    onboard_escalation:\
+      \ \"Tell the onboard CMO today.\"\n    ground_escalation: \"Queue a schedule\
+      \ note for ground planners.\"\n    source_ids: [VanDongen2003, Belenky2003,\
+      \ NASA-HRP-Sleep2016]\n    assumption_ids: [A7]\n\n  - id: radiation-spe-procedure\n\
+      \    status: act\n    heading: Solar particle event warning\n    why: \"A space-weather\
+      \ warning is active{rate_text}.\"\n    uncertainty: \"Dose so far today is {dose_today}\
+      \ mSv{partial_text}.\"\n    do_now:\n      - \"Follow the mission's approved\
+      \ solar particle event procedure now, including moving to the designated shelter\
+      \ if the procedure says so.\"\n      - \"Keep your personal dosimeter on.\"\n\
+      \    recheck: \"When the all-clear is given.\"\n    onboard_escalation: \"Confirm\
+      \ with the crew/commander that everyone is following the procedure.\"\n    ground_escalation:\
+      \ \"Log for ground; the procedure does not wait for a reply.\"\n    source_ids:\
+      \ [NASA-STD-3001-V1C, OCHMO-TB-020]\n    assumption_ids: [A8]\n\n  - id: radiation-budget\n\
+      \    status: watch\n    heading: Radiation budget\n    why: \"Mission dose {mission_dose}\
+      \ mSv{career_text} — {pct}% of the 600 mSv career limit.\"\n    uncertainty:\
+      \ \"{career_unknown_text}Background rate measured on the way to Mars was about\
+      \ 1.84 mSv/day.\"\n    do_now:\n      - \"Review upcoming activities that add\
+      \ dose with the crew.\"\n    recheck: \"Weekly.\"\n    onboard_escalation: \"\
+      Discuss with the commander/CMO if planned activities would exceed the mission\
+      \ plan.\"\n    ground_escalation: \"Queue a budget summary for ground.\"\n \
+      \   source_ids: [NASA-STD-3001-V1C, Zeitlin2013]\n    assumption_ids: [A8]\n"
+  model/configs/stage0.yaml:
+    sha256: cca0862268406ee8fff1b8d47a1cfdb264e036077eae4d80096bd57ae657dd88
+    text: "sampling:\n  background_interval_hours: 1\n  event_interval_hours: 0.25\n\
+      \  boundary: nextafter_24\nprofile:\n  label: Mars-class deep-space transit\
+      \ — simulated\n  comms_one_way_delay_min:\n    min: 0\n    max: 20\n  blackouts:\
+      \ []\n  spe_event_timing_source: NASA DONKI SEP (CCMC) — GOES onsets 2017-09-05/06/10,\
+      \ observed\n    near Earth; timing replayed, dose from Zeitlin2013 Table 1;\
+      \ file sha256 73758df3e43c2cda3c64c0350728aad4a926eba6a15396f0296969b1c63bf227\n\
+      s2_shape:\n  ramp_days: 2\n  recovery_days: 2\nradiation:\n  caution_watch_msv_h:\
+      \ 0.1\n  shelter_act_msv_h: 0.5\n  placeholder: true\nsleep:\n  policy_source:\
+      \ research/rules.yaml\ns3_timing: donki\ns3_legacy:\n  warning_hour: 6\n  rise_hours:\
+      \ 2\n  decay_hours: 24\nsimulation:\n  noise:\n    distribution: gaussian\n\
+      \    student_t_df: 4\n  S2:\n    rhr_delta_bpm: 5.6\n    hrv_delta_sd_range:\n\
+      \    - 0.5\n    - 1.0\n    temperature_delta_sd_range:\n    - 0.5\n    - 1.0\n\
+      \    symptoms:\n    - sore_throat\n    - fatigue\n  S3:\n    total_extra_dose_msv:\
+      \ 19.5\n    duration_days: 9\n    rise_hours: 2\n    decay_hours: 24\n  S4:\n\
+      \    sleep_hours_range:\n    - 5.0\n    - 5.4\n  N1:\n    rhr_delta_bpm_range:\n\
+      \    - 5.0\n    - 10.0\n    days:\n    - 60\n    - 61\n    - 110\n  N2:\n  \
+      \  valid_preflight_hrv_days: 8\n    wearable_gap_days:\n    - 120\n    - 124\n\
+      \    skipped_checkin_days:\n    - 130\n    - 131\ns3_donki:\n  window_start_utc:\
+      \ '2017-09-04T00:00:00Z'\n  window_end_exclusive_utc: '2017-09-12T00:00:00Z'\n\
+      \  group_hours: 6\n  expected_episodes: 3\n"
+baseline:
+  mad_factor: 1.4826
+  min_valid_days: 10
+  minimum_scales:
+    rhr_bpm: 1.5
+    hrv_rmssd_ms: 5
+    skin_temp_delta_c: 0.1
+    sleep_hours: 0.3
+sleep:
+  watch_z: -2.0
+  persistence_nights: 2
+  window_nights: 7
+  min_valid_nights: 5
+  act_relative_debt_h: 8.16
+  absolute_reference_h_info_only: 8.16
+radiation: *id001
+holdout:
+  seeds:
+  - 1000
+  - 1001
+  - 1002
+  - 1003
+  - 1004
+  - 1005
+  - 1006
+  - 1007
+  - 1008
+  - 1009
+  - 1010
+  - 1011
+  - 1012
+  - 1013
+  - 1014
+  - 1015
+  - 1016
+  - 1017
+  - 1018
+  - 1019
+  effect_scales:
+  - 0.6
+  - 0.8
+  - 1.2
+  noise:
+  - gaussian
+  - student_t
+  student_t_df: 4
+  rhr_delta_bpm_range:
+  - 3.1
+  - 8.6
+  bootstrap_samples: 10000
+  bootstrap_seed: 0
+  exclusions:
+    physiological_change:
+      crew: C2
+      days:
+      - 40
+      - 50
+    sleep_alertness:
+      crew: C3
+      days:
+      - 95
+      - 108
+    radiation:
+      crew: all
+      days:
+      - 72
+      - 87
+  release_case:
+    noise: gaussian
+    effect_scale: 0.8
+  report_directory: model/reports/holdout/holdout-2

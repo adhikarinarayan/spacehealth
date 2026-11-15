@@ -1,0 +1,71 @@
+sampling:
+  background_interval_hours: 1
+  event_interval_hours: 0.25
+  boundary: nextafter_24
+profile:
+  label: Mars-class deep-space transit — simulated
+  comms_one_way_delay_min:
+    min: 0
+    max: 20
+  blackouts: []
+  spe_event_timing_source: NASA DONKI SEP (CCMC) — GOES onsets 2017-09-05/06/10, observed
+    near Earth; timing replayed, dose from Zeitlin2013 Table 1; file sha256 73758df3e43c2cda3c64c0350728aad4a926eba6a15396f0296969b1c63bf227
+s2_shape:
+  ramp_days: 2
+  recovery_days: 2
+radiation:
+  caution_watch_msv_h: 0.1
+  shelter_act_msv_h: 0.5
+  placeholder: true
+sleep:
+  policy_source: research/rules.yaml
+s3_timing: donki
+s3_legacy:
+  warning_hour: 6
+  rise_hours: 2
+  decay_hours: 24
+simulation:
+  noise:
+    distribution: gaussian
+    student_t_df: 4
+  S2:
+    rhr_delta_bpm: 5.6
+    hrv_delta_sd_range:
+    - 0.5
+    - 1.0
+    temperature_delta_sd_range:
+    - 0.5
+    - 1.0
+    symptoms:
+    - sore_throat
+    - fatigue
+  S3:
+    total_extra_dose_msv: 19.5
+    duration_days: 9
+    rise_hours: 2
+    decay_hours: 24
+  S4:
+    sleep_hours_range:
+    - 5.0
+    - 5.4
+  N1:
+    rhr_delta_bpm_range:
+    - 5.0
+    - 10.0
+    days:
+    - 60
+    - 61
+    - 110
+  N2:
+    valid_preflight_hrv_days: 8
+    wearable_gap_days:
+    - 120
+    - 124
+    skipped_checkin_days:
+    - 130
+    - 131
+s3_donki:
+  window_start_utc: '2017-09-04T00:00:00Z'
+  window_end_exclusive_utc: '2017-09-12T00:00:00Z'
+  group_hours: 6
+  expected_episodes: 3

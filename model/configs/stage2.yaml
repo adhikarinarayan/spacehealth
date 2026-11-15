@@ -1,0 +1,46 @@
+mission_days:
+- 1
+- 180
+signals:
+- rhr_bpm
+- hrv_rmssd_ms
+- skin_temp_delta_c
+missing_state_policy: reset
+M3:
+  lambda: 0.2
+  control_sigma: 3.0
+M5:
+  quantile: 0.99
+  consecutive_days: 2
+  covariance: LedoitWolf
+  assume_centered: false
+evaluation:
+  s2_window:
+  - 40
+  - 48
+  false_alert_exclude_s2_window:
+  - 40
+  - 50
+  n1_days:
+  - 60
+  - 61
+  - 110
+  n1_radius_days: 2
+  n2_gap_days:
+  - 120
+  - 124
+  n2_skipped_checkin_days:
+  - 130
+  - 131
+candidates:
+- M3
+- M5
+seed_min: 0
+seed_max: 19
+bootstrap:
+  samples: 10000
+  seed: 0
+radiation_exclude_days:
+- 72
+- 81
+synthetic_snapshot: model/reports/stage2/pre_donki_inputs.json

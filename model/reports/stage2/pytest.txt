@@ -1,0 +1,1251 @@
+........................................................................ [ 57%]
+.....................E.....EE.....EE........EEE.EEEEEE                   [100%]
+==================================== ERRORS ====================================
+_____ ERROR at setup of test_s3_first_warning_is_immediate_for_every_crew ______
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sleep_radiation.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+___________________ ERROR at setup of test_s4_watch_by_day97 ___________________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sleep_radiation.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+____________ ERROR at setup of test_sleep_unknown_on_missing_nights ____________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sleep_radiation.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+___ ERROR at setup of test_export_has_real_sleep_radiation_not_placeholders ____
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sleep_radiation.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+_______________ ERROR at setup of test_modules_no_future_leakage _______________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_sleep_radiation.py:14: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+___________________ ERROR at setup of test_no_future_leakage ___________________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+____________ ERROR at setup of test_simulation_shape_and_provenance ____________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+________ ERROR at setup of test_deterministic_seed_and_scenario_toggle _________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+___________ ERROR at setup of test_dose_matches_independent_integral ___________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+_______________________ ERROR at setup of test_n1_no_act _______________________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+____________ ERROR at setup of test_n2_unknown_and_skipped_checkin _____________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+________ ERROR at setup of test_forbidden_words_and_placeholder_modules ________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+_______ ERROR at setup of test_exports_validate_and_mission_hash_matches _______
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+________________ ERROR at setup of test_s2_flag_by_symptom_day _________________
+
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+
+    @pytest.fixture(scope='module')
+>   def mission(config):return generate_mission(0,config)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_stage0.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+seed = 0
+config = {'signals': {'rhr_bpm': {'unit': 'bpm', 'v1': 'required', 'meaning': 'nightly resting heart rate (overnight average)',...shorter than your normal', 'why': 'You slept {hours} h, below your usual range, for {nights} nights.', ...}, ...}, ...}
+enabled = {'N1', 'N2', 'S1', 'S2', 'S3', 'S4'}
+
+    def generate_mission(seed, config, enabled=None):
+        sc = config['scenarios']['scenarios']
+        enabled = set(sc) if enabled is None else set(enabled) | {'S1'}
+        if enabled-set(sc): raise ValueError('Unknown scenario toggle')
+        setup = config['scenarios']['mission']
+        prelo,prehi = setup['preflight_days']; lo,hi = setup['mission_days']
+        days = [*range(prelo,prehi+1),*range(lo,hi+1)]
+        signals = config['signals']
+        streams = np.random.SeedSequence(seed).spawn(len(setup['crew'])+1)
+        effect_rng = np.random.default_rng(streams[-1])
+        readings=[]; crew=[]
+        for crew_id,stream in zip(setup['crew'],streams):
+            rng=np.random.default_rng(stream)
+            center={s:float(rng.uniform(*signals[s]['sim_person_baseline_range'])) for s in ('rhr_bpm','hrv_rmssd_ms','sleep_hours')}
+            center['skin_temp_delta_c']=signals['skin_temp_delta_c']['sim_person_baseline']
+            crew.append({'crewId':crew_id,'label':crew_id,'prior_career_dose_msv':None})
+            for day in days:
+                r={'crewId':crew_id,'missionDay':day,'symptoms':[],'checkin_completed':True,'daily_dose_msv':None,'dose_coverage':None}
+                for signal in center:
+                    spec=signals[signal]
+                    sd=spec.get('sim_day_to_day_sd',center[signal]*spec.get('sim_day_to_day_cv',0))
+                    r[signal]=float(rng.normal(center[signal],sd))
+                r['provenance']={s:'synthetic' for s in [*center,'symptoms','daily_dose_msv']}
+                readings.append(r)
+        if 'S2' in enabled:
+            event=sc['S2']; own=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            effects={'rhr_bpm':numbers(event['effects']['rhr_bpm'])[0]}
+            for signal in ('hrv_rmssd_ms','skin_temp_delta_c'):
+                sd=float(np.std([r[signal] for r in own],ddof=1))
+                units=numbers(event['effects'][signal])[:2]
+                magnitude=effect_rng.uniform(*sorted(abs(x) for x in units))*sd
+                effects[signal]=(-1 if signal=='hrv_rmssd_ms' else 1)*magnitude
+            ramp=config['stage']['s2_shape']['ramp_days']; recovery=config['stage']['s2_shape']['recovery_days']
+            symptom_key=next(k for k in event['effects'] if k.startswith('symptoms_from_'))
+            for r in readings:
+                d=r['missionDay']
+                if r['crewId']!=event['crew'] or not event['onsetDay']<=d<=event['endDay']:continue
+                factor=min(1.0,(d-event['onsetDay']+1)/ramp,max(0.0,(event['endDay']-d)/recovery))
+                for signal,delta in effects.items():r[signal]+=float(delta)*factor
+                if event['symptomDay']<=d<event['endDay']:r['symptoms']=list(event['effects'][symptom_key])
+        if 'S4' in enabled:
+            event=sc['S4']; low,high=numbers(event['effects']['sleep_hours'])[:2]
+            # A hyphen between unsigned range endpoints is a separator, not a negative value.
+            low,high=abs(low),abs(high)
+            for r in readings:
+                if r['crewId']==event['crew'] and event['onsetDay']<=r['missionDay']<=event['endDay']:
+                    r['sleep_hours']=float(effect_rng.uniform(min(low,high),max(low,high)))
+        if 'N1' in enabled:
+            event=sc['N1']; text=event['what']
+            delta=re.search(r'\(\+([\d.]+) to \+([\d.]+) bpm',text)
+            if delta is None:raise ValueError('Unsupported N1 amplitude wording')
+            selected=[int(x) for x in re.search(r'single days ([\d, ]+)',text)[1].split(',')]
+            for r in readings:
+                if r['crewId']==event['crew'] and r['missionDay'] in selected:
+                    r['rhr_bpm']+=float(effect_rng.uniform(float(delta[1]),float(delta[2])))
+        if 'N2' in enabled:
+            event=sc['N2']; text=event['what']
+            valid_days=int(re.search(r'only (\d+) valid preflight',text)[1])
+            gap=_bounds(text,r'gap days (\d+)[–-](\d+)'); skip=_bounds(text,r'skipped days (\d+)[–-](\d+)')
+            preflight=[r for r in readings if r['crewId']==event['crew'] and r['missionDay']<0]
+            for r in preflight[valid_days:]:r['hrv_rmssd_ms']=None
+            for r in readings:
+                if r['crewId']!=event['crew']:continue
+                if gap[0]<=r['missionDay']<=gap[1]:
+                    for signal in config['rules']['physiological_change']['signals']:r[signal]=None
+                if skip[0]<=r['missionDay']<=skip[1]:r['checkin_completed']=False;r['symptoms']=[]
+        # Common radiation profile sampled separately for each day, then assigned to each crew.
+        storm=sc['S3']; timeline=storm['timeline']
+>       warning_hour=int(re.search(r't=(\d+):',timeline)[1])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not subscriptable
+
+spacehealth_model/sim/generate.py:83: TypeError
+=========================== short test summary info ============================
+ERROR tests/test_sleep_radiation.py::test_s3_first_warning_is_immediate_for_every_crew
+ERROR tests/test_sleep_radiation.py::test_s4_watch_by_day97 - TypeError: 'Non...
+ERROR tests/test_sleep_radiation.py::test_sleep_unknown_on_missing_nights - T...
+ERROR tests/test_sleep_radiation.py::test_export_has_real_sleep_radiation_not_placeholders
+ERROR tests/test_sleep_radiation.py::test_modules_no_future_leakage - TypeErr...
+ERROR tests/test_stage0.py::test_no_future_leakage - TypeError: 'NoneType' ob...
+ERROR tests/test_stage0.py::test_simulation_shape_and_provenance - TypeError:...
+ERROR tests/test_stage0.py::test_deterministic_seed_and_scenario_toggle - Typ...
+ERROR tests/test_stage0.py::test_dose_matches_independent_integral - TypeErro...
+ERROR tests/test_stage0.py::test_n1_no_act - TypeError: 'NoneType' object is ...
+ERROR tests/test_stage0.py::test_n2_unknown_and_skipped_checkin - TypeError: ...
+ERROR tests/test_stage0.py::test_forbidden_words_and_placeholder_modules - Ty...
+ERROR tests/test_stage0.py::test_exports_validate_and_mission_hash_matches - ...
+ERROR tests/test_stage0.py::test_s2_flag_by_symptom_day - TypeError: 'NoneTyp...
+112 passed, 14 errors in 5.42s

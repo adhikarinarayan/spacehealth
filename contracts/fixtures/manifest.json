@@ -1,0 +1,72 @@
+[
+  {
+    "path": "valid/cards--minimal.json",
+    "kind": "cards",
+    "expected": true
+  },
+  {
+    "path": "valid/indicators--minimal.json",
+    "kind": "indicators",
+    "expected": true
+  },
+  {
+    "path": "valid/mission--minimal.json",
+    "kind": "mission",
+    "expected": true
+  },
+  {
+    "path": "valid/validation--minimal.json",
+    "kind": "validation",
+    "expected": true
+  },
+  {
+    "path": "invalid/mission--missing-required-key.json",
+    "kind": "mission",
+    "expected": false
+  },
+  {
+    "path": "invalid/mission--day-zero.json",
+    "kind": "mission",
+    "expected": false
+  },
+  {
+    "path": "invalid/mission--unknown-signal-id.json",
+    "kind": "mission",
+    "expected": false
+  },
+  {
+    "path": "invalid/mission--skipped-checkin-with-symptoms.json",
+    "kind": "mission",
+    "expected": false
+  },
+  {
+    "path": "invalid/mission--nan.json",
+    "kind": "mission",
+    "expected": false
+  },
+  {
+    "path": "invalid/indicators--nominal-missing.json",
+    "kind": "indicators",
+    "expected": false
+  },
+  {
+    "path": "invalid/indicators--unknown-valid.json",
+    "kind": "indicators",
+    "expected": false
+  },
+  {
+    "path": "valid/mission--implausible-finite.json",
+    "kind": "mission",
+    "expected": true
+  },
+  {
+    "path": "valid/mission--optional-null.json",
+    "kind": "mission",
+    "expected": true
+  },
+  {
+    "path": "invalid/mission--missing-profile.json",
+    "kind": "mission",
+    "expected": false
+  }
+]

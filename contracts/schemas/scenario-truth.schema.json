@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spacehealth.local/contracts/scenario-truth.schema.json",
+  "type": "object",
+  "properties": {
+    "scenarioId": {
+      "enum": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "N1",
+        "N2"
+      ]
+    },
+    "crewId": {
+      "enum": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    "moduleId": {
+      "anyOf": [
+        {
+          "enum": [
+            "sleep_alertness",
+            "physiological_change",
+            "radiation"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "onsetDay": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180,
+          "not": {
+            "exclusiveMinimum": 1.7976931348623157e+308
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "symptomDay": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180,
+          "not": {
+            "exclusiveMinimum": 1.7976931348623157e+308
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "endDay": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180,
+          "not": {
+            "exclusiveMinimum": 1.7976931348623157e+308
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "scenarioId",
+    "crewId",
+    "moduleId",
+    "onsetDay",
+    "symptomDay",
+    "endDay",
+    "description"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,882 @@
+{
+  "wording": "real NASA DONKI SEP onset timing (observed near Earth); dose and Mars-transit mapping are simulation assumptions",
+  "frozenConfigSha256": "03632b3d13fbcc888a5bed3511939694989ed8a72c9e594c230035279bc2d7e0",
+  "seed": 0,
+  "crewCount": 4,
+  "totalExtraDoseMsvPerWindow": 19.5,
+  "results": [
+    {
+      "window": "2017-09",
+      "sourceSha256": "73758df3e43c2cda3c64c0350728aad4a926eba6a15396f0296969b1c63bf227",
+      "mappedEpisodes": [
+        {
+          "missionDay": 60,
+          "timeHoursFromDayStart": 0.5,
+          "onsetUtc": "2017-09-05T00:30:00Z",
+          "sepIDs": [
+            "2017-09-05T00:30:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 61,
+          "timeHoursFromDayStart": 23.75,
+          "onsetUtc": "2017-09-06T23:45:00Z",
+          "sepIDs": [
+            "2017-09-06T23:45:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 65,
+          "timeHoursFromDayStart": 16.416666666666668,
+          "onsetUtc": "2017-09-10T16:25:00Z",
+          "sepIDs": [
+            "2017-09-10T16:25:00-SEP-001",
+            "2017-09-10T16:45:00-SEP-001"
+          ]
+        }
+      ],
+      "surveyMatches": true,
+      "checks": {
+        "immediate_act": true,
+        "renewal_hold": true,
+        "clears": true,
+        "dose": true,
+        "no_rate_act_outside": true,
+        "critical_card_first_uncapped": true
+      },
+      "onsetActSamples": [
+        {
+          "crewId": "C1",
+          "onsetUtc": "2017-09-05T00:30:00Z",
+          "missionDay": 60,
+          "hour": 0.5,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2017-09-06T23:45:00Z",
+          "missionDay": 61,
+          "hour": 23.75,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2017-09-10T16:25:00Z",
+          "missionDay": 65,
+          "hour": 16.416666666666742,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2017-09-05T00:30:00Z",
+          "missionDay": 60,
+          "hour": 0.5,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2017-09-06T23:45:00Z",
+          "missionDay": 61,
+          "hour": 23.75,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2017-09-10T16:25:00Z",
+          "missionDay": 65,
+          "hour": 16.416666666666742,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2017-09-05T00:30:00Z",
+          "missionDay": 60,
+          "hour": 0.5,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2017-09-06T23:45:00Z",
+          "missionDay": 61,
+          "hour": 23.75,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2017-09-10T16:25:00Z",
+          "missionDay": 65,
+          "hour": 16.416666666666742,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2017-09-05T00:30:00Z",
+          "missionDay": 60,
+          "hour": 0.5,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2017-09-06T23:45:00Z",
+          "missionDay": 61,
+          "hour": 23.75,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2017-09-10T16:25:00Z",
+          "missionDay": 65,
+          "hour": 16.416666666666742,
+          "status": "act"
+        }
+      ],
+      "clearSamples": [
+        {
+          "crewId": "C1",
+          "missionDay": 65,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C1",
+          "missionDay": 68,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 65,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 68,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 65,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 68,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 65,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 68,
+          "hour": 0,
+          "status": "watch"
+        }
+      ],
+      "warningIntervalsMissionHours": [
+        [
+          1416.5,
+          1442.5
+        ],
+        [
+          1463.75,
+          1489.75
+        ],
+        [
+          1552.4166666666667,
+          1578.4166666666667
+        ]
+      ],
+      "holdIntervalsMissionHours": [
+        [
+          1416.5,
+          1536
+        ],
+        [
+          1552.4166666666667,
+          1608
+        ]
+      ],
+      "rawWarningHours": 78.0,
+      "actHoldHours": 175.08333333333326,
+      "holdSampleProbesAllCrew": 2836,
+      "dose": {
+        "injectedMsv": 19.49999999999909,
+        "totalMissionMsv": 350.6999999999991,
+        "dailyMaxError": 0.0,
+        "cumulativeMaxError": 0.0,
+        "partialCoverageChecked": true
+      },
+      "outsideWarningAndHoldRateWatchSamplesPerCrew": 21,
+      "outsideWarningAndHoldRateWatchDaysPerCrew": 2
+    },
+    {
+      "window": "2021-10",
+      "sourceSha256": "f295c54637405c11a96786e6f9f188b41b225d44a3e706052d9ba2c96cc327c7",
+      "mappedEpisodes": [
+        {
+          "missionDay": 60,
+          "timeHoursFromDayStart": 16.583333333333332,
+          "onsetUtc": "2021-10-28T16:35:00Z",
+          "sepIDs": [
+            "2021-10-28T16:35:00-SEP-001",
+            "2021-10-28T17:40:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 66,
+          "timeHoursFromDayStart": 20.916666666666668,
+          "onsetUtc": "2021-11-03T20:55:00Z",
+          "sepIDs": [
+            "2021-11-03T20:55:00-SEP-001"
+          ]
+        }
+      ],
+      "surveyMatches": true,
+      "checks": {
+        "immediate_act": true,
+        "renewal_hold": true,
+        "clears": true,
+        "dose": true,
+        "no_rate_act_outside": true,
+        "critical_card_first_uncapped": true
+      },
+      "onsetActSamples": [
+        {
+          "crewId": "C1",
+          "onsetUtc": "2021-10-28T16:35:00Z",
+          "missionDay": 60,
+          "hour": 16.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2021-11-03T20:55:00Z",
+          "missionDay": 66,
+          "hour": 20.916666666666742,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2021-10-28T16:35:00Z",
+          "missionDay": 60,
+          "hour": 16.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2021-11-03T20:55:00Z",
+          "missionDay": 66,
+          "hour": 20.916666666666742,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2021-10-28T16:35:00Z",
+          "missionDay": 60,
+          "hour": 16.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2021-11-03T20:55:00Z",
+          "missionDay": 66,
+          "hour": 20.916666666666742,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2021-10-28T16:35:00Z",
+          "missionDay": 60,
+          "hour": 16.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2021-11-03T20:55:00Z",
+          "missionDay": 66,
+          "hour": 20.916666666666742,
+          "status": "act"
+        }
+      ],
+      "clearSamples": [
+        {
+          "crewId": "C1",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C1",
+          "missionDay": 69,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 69,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 69,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 69,
+          "hour": 0,
+          "status": "watch"
+        }
+      ],
+      "warningIntervalsMissionHours": [
+        [
+          1432.5833333333333,
+          1458.5833333333333
+        ],
+        [
+          1580.9166666666667,
+          1606.9166666666667
+        ]
+      ],
+      "holdIntervalsMissionHours": [
+        [
+          1432.5833333333333,
+          1488
+        ],
+        [
+          1580.9166666666667,
+          1632
+        ]
+      ],
+      "rawWarningHours": 52.0,
+      "actHoldHours": 106.5,
+      "holdSampleProbesAllCrew": 1740,
+      "dose": {
+        "injectedMsv": 19.499999999999034,
+        "totalMissionMsv": 350.699999999999,
+        "dailyMaxError": 0.0,
+        "cumulativeMaxError": 0.0,
+        "partialCoverageChecked": true
+      },
+      "outsideWarningAndHoldRateWatchSamplesPerCrew": 135,
+      "outsideWarningAndHoldRateWatchDaysPerCrew": 4
+    },
+    {
+      "window": "2024-05",
+      "sourceSha256": "8bdbcfa66a3fc5757a8afd2e729107a2dd2e0a95d86c7f04ad6e98c1bdccd5f8",
+      "mappedEpisodes": [
+        {
+          "missionDay": 60,
+          "timeHoursFromDayStart": 13.583333333333334,
+          "onsetUtc": "2024-05-10T13:35:00Z",
+          "sepIDs": [
+            "2024-05-10T13:35:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 61,
+          "timeHoursFromDayStart": 2.1666666666666665,
+          "onsetUtc": "2024-05-11T02:10:00Z",
+          "sepIDs": [
+            "2024-05-11T02:10:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 63,
+          "timeHoursFromDayStart": 14.0,
+          "onsetUtc": "2024-05-13T14:00:00Z",
+          "sepIDs": [
+            "2024-05-13T14:00:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 89,
+          "timeHoursFromDayStart": 2.4166666666666665,
+          "onsetUtc": "2024-06-08T02:25:00Z",
+          "sepIDs": [
+            "2024-06-08T02:25:00-SEP-001",
+            "2024-06-08T02:55:00-SEP-001"
+          ]
+        }
+      ],
+      "surveyMatches": true,
+      "checks": {
+        "immediate_act": true,
+        "renewal_hold": true,
+        "clears": true,
+        "dose": true,
+        "no_rate_act_outside": true,
+        "critical_card_first_uncapped": true
+      },
+      "onsetActSamples": [
+        {
+          "crewId": "C1",
+          "onsetUtc": "2024-05-10T13:35:00Z",
+          "missionDay": 60,
+          "hour": 13.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2024-05-11T02:10:00Z",
+          "missionDay": 61,
+          "hour": 2.1666666666667425,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2024-05-13T14:00:00Z",
+          "missionDay": 63,
+          "hour": 14.0,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2024-06-08T02:25:00Z",
+          "missionDay": 89,
+          "hour": 2.416666666666515,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2024-05-10T13:35:00Z",
+          "missionDay": 60,
+          "hour": 13.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2024-05-11T02:10:00Z",
+          "missionDay": 61,
+          "hour": 2.1666666666667425,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2024-05-13T14:00:00Z",
+          "missionDay": 63,
+          "hour": 14.0,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2024-06-08T02:25:00Z",
+          "missionDay": 89,
+          "hour": 2.416666666666515,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2024-05-10T13:35:00Z",
+          "missionDay": 60,
+          "hour": 13.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2024-05-11T02:10:00Z",
+          "missionDay": 61,
+          "hour": 2.1666666666667425,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2024-05-13T14:00:00Z",
+          "missionDay": 63,
+          "hour": 14.0,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2024-06-08T02:25:00Z",
+          "missionDay": 89,
+          "hour": 2.416666666666515,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2024-05-10T13:35:00Z",
+          "missionDay": 60,
+          "hour": 13.583333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2024-05-11T02:10:00Z",
+          "missionDay": 61,
+          "hour": 2.1666666666667425,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2024-05-13T14:00:00Z",
+          "missionDay": 63,
+          "hour": 14.0,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2024-06-08T02:25:00Z",
+          "missionDay": 89,
+          "hour": 2.416666666666515,
+          "status": "act"
+        }
+      ],
+      "clearSamples": [
+        {
+          "crewId": "C1",
+          "missionDay": 66,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C1",
+          "missionDay": 92,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 66,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 92,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 66,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 92,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 66,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 92,
+          "hour": 0,
+          "status": "unknown"
+        }
+      ],
+      "warningIntervalsMissionHours": [
+        [
+          1429.5833333333333,
+          1468.1666666666667
+        ],
+        [
+          1502.0,
+          1528.0
+        ],
+        [
+          2114.4166666666665,
+          2140.4166666666665
+        ]
+      ],
+      "holdIntervalsMissionHours": [
+        [
+          1429.5833333333333,
+          1560
+        ],
+        [
+          2114.4166666666665,
+          2184
+        ]
+      ],
+      "rawWarningHours": 90.58333333333348,
+      "actHoldHours": 200.00000000000023,
+      "holdSampleProbesAllCrew": 3260,
+      "dose": {
+        "injectedMsv": 19.499999999999034,
+        "totalMissionMsv": 350.699999999999,
+        "dailyMaxError": 0.0,
+        "cumulativeMaxError": 0.0,
+        "partialCoverageChecked": true
+      },
+      "outsideWarningAndHoldRateWatchSamplesPerCrew": 0,
+      "outsideWarningAndHoldRateWatchDaysPerCrew": 0
+    },
+    {
+      "window": "2024-10",
+      "sourceSha256": "853fdfe8b5c4dd2882ed191b9c93a420719d51fa7996076cb275bdeef293730f",
+      "mappedEpisodes": [
+        {
+          "missionDay": 60,
+          "timeHoursFromDayStart": 3.8333333333333335,
+          "onsetUtc": "2024-10-09T03:50:00Z",
+          "sepIDs": [
+            "2024-10-09T03:50:00-SEP-001",
+            "2024-10-09T05:05:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 77,
+          "timeHoursFromDayStart": 18.083333333333332,
+          "onsetUtc": "2024-10-26T18:05:00Z",
+          "sepIDs": [
+            "2024-10-26T18:05:00-SEP-001"
+          ]
+        },
+        {
+          "missionDay": 103,
+          "timeHoursFromDayStart": 18.75,
+          "onsetUtc": "2024-11-21T18:45:00Z",
+          "sepIDs": [
+            "2024-11-21T18:45:00-SEP-001",
+            "2024-11-21T19:25:00-SEP-001"
+          ]
+        }
+      ],
+      "surveyMatches": true,
+      "checks": {
+        "immediate_act": true,
+        "renewal_hold": true,
+        "clears": true,
+        "dose": true,
+        "no_rate_act_outside": true,
+        "critical_card_first_uncapped": true
+      },
+      "onsetActSamples": [
+        {
+          "crewId": "C1",
+          "onsetUtc": "2024-10-09T03:50:00Z",
+          "missionDay": 60,
+          "hour": 3.8333333333332575,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2024-10-26T18:05:00Z",
+          "missionDay": 77,
+          "hour": 18.083333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C1",
+          "onsetUtc": "2024-11-21T18:45:00Z",
+          "missionDay": 103,
+          "hour": 18.75,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2024-10-09T03:50:00Z",
+          "missionDay": 60,
+          "hour": 3.8333333333332575,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2024-10-26T18:05:00Z",
+          "missionDay": 77,
+          "hour": 18.083333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C2",
+          "onsetUtc": "2024-11-21T18:45:00Z",
+          "missionDay": 103,
+          "hour": 18.75,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2024-10-09T03:50:00Z",
+          "missionDay": 60,
+          "hour": 3.8333333333332575,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2024-10-26T18:05:00Z",
+          "missionDay": 77,
+          "hour": 18.083333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C3",
+          "onsetUtc": "2024-11-21T18:45:00Z",
+          "missionDay": 103,
+          "hour": 18.75,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2024-10-09T03:50:00Z",
+          "missionDay": 60,
+          "hour": 3.8333333333332575,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2024-10-26T18:05:00Z",
+          "missionDay": 77,
+          "hour": 18.083333333333258,
+          "status": "act"
+        },
+        {
+          "crewId": "C4",
+          "onsetUtc": "2024-11-21T18:45:00Z",
+          "missionDay": 103,
+          "hour": 18.75,
+          "status": "act"
+        }
+      ],
+      "clearSamples": [
+        {
+          "crewId": "C1",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C1",
+          "missionDay": 80,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C1",
+          "missionDay": 106,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 80,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C2",
+          "missionDay": 106,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 80,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C3",
+          "missionDay": 106,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 63,
+          "hour": 0,
+          "status": "unknown"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 80,
+          "hour": 0,
+          "status": "watch"
+        },
+        {
+          "crewId": "C4",
+          "missionDay": 106,
+          "hour": 0,
+          "status": "watch"
+        }
+      ],
+      "warningIntervalsMissionHours": [
+        [
+          1419.8333333333333,
+          1445.8333333333333
+        ],
+        [
+          1842.0833333333333,
+          1868.0833333333333
+        ],
+        [
+          2466.75,
+          2492.75
+        ]
+      ],
+      "holdIntervalsMissionHours": [
+        [
+          1419.8333333333333,
+          1488
+        ],
+        [
+          1842.0833333333333,
+          1896
+        ],
+        [
+          2466.75,
+          2520
+        ]
+      ],
+      "rawWarningHours": 78.0,
+      "actHoldHours": 175.33333333333348,
+      "holdSampleProbesAllCrew": 2848,
+      "dose": {
+        "injectedMsv": 19.499999999998977,
+        "totalMissionMsv": 350.69999999999897,
+        "dailyMaxError": 0.0,
+        "cumulativeMaxError": 0.0,
+        "partialCoverageChecked": true
+      },
+      "outsideWarningAndHoldRateWatchSamplesPerCrew": 53,
+      "outsideWarningAndHoldRateWatchDaysPerCrew": 4
+    }
+  ]
+}

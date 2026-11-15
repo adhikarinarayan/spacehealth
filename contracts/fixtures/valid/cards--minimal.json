@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "0.2.0",
+  "cards": [
+    {
+      "id": "fixture",
+      "status": "unknown",
+      "heading": "Contract placeholder",
+      "why": "Fixture only",
+      "uncertainty": "Not evaluated",
+      "do_now": [
+        "Placeholder only"
+      ],
+      "recheck": "Not configured",
+      "onboard_escalation": "Not configured",
+      "ground_escalation": "Not configured",
+      "source_ids": [],
+      "assumption_ids": [
+        "FIXTURE-01"
+      ]
+    }
+  ],
+  "source": "research/cards.yaml"
+}

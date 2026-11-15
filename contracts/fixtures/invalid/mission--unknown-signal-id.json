@@ -1,0 +1,497 @@
+{
+  "schemaVersion": "0.2.0",
+  "simulated": true,
+  "generator": "contract-fixture-only",
+  "seed": 1,
+  "createdAt": "2026-11-14T18:10:00-06:00",
+  "crew": [
+    {
+      "crewId": "C1",
+      "label": "Crew 1",
+      "prior_career_dose_msv": null
+    }
+  ],
+  "readings": [
+    {
+      "crewId": "C1",
+      "missionDay": -14,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic",
+        "not_a_signal": "sensor"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -13,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -12,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -11,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -10,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -9,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -8,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -7,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -6,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -5,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -4,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -3,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -2,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": -1,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 1,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 2,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 3,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 4,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 5,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 6,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 7,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 8,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 9,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 10,
+      "rhr_bpm": 60,
+      "hrv_rmssd_ms": 40,
+      "skin_temp_delta_c": 0,
+      "sleep_hours": 8,
+      "symptoms": [],
+      "daily_dose_msv": null,
+      "checkin_completed": true,
+      "dose_coverage": null,
+      "provenance": {
+        "rhr_bpm": "synthetic",
+        "hrv_rmssd_ms": "synthetic",
+        "skin_temp_delta_c": "synthetic",
+        "sleep_hours": "synthetic",
+        "symptoms": "synthetic"
+      }
+    }
+  ],
+  "radiationEvents": [],
+  "truth": [
+    {
+      "scenarioId": "S1",
+      "crewId": "C1",
+      "moduleId": null,
+      "onsetDay": null,
+      "symptomDay": null,
+      "endDay": null,
+      "description": "Contract fixture; no detector output implied."
+    }
+  ],
+  "missionProfile": {
+    "id": "mars_transit_v1",
+    "label": "Contract fixture only",
+    "durationDays": 180,
+    "gcr_background_msv_day": 1.84,
+    "comms_one_way_delay_min": {
+      "min": 0,
+      "max": 20
+    },
+    "blackouts": [],
+    "spe_event_timing_source": "DONKI SEP 2017-09-10; observed near Earth; fixture context"
+  }
+}

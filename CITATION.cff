@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "Please cite SpaceHealth using this metadata."
+title: "SpaceHealth: Personal-baseline crew health monitoring for a simulated Mars transit"
+type: software
+authors:
+  - given-names: "Narayan"
+    family-names: "Adhikari"
+  - given-names: "Abhishek Sunil"
+    family-names: "Tiwari"
+  - given-names: "Shweta Sunil"
+    family-names: "Tiwari"
+version: 0.1.0
+date-released: 2026-11-15
+repository-code: "https://github.com/adhikarinarayan/spacehealth"
+url: "https://spacehealth-demo.vercel.app/"
+license: Apache-2.0
+abstract: "Research prototype combining frozen physiological, sleep and radiation rules with explainable action cards and an offline dashboard. Primarily simulated data; separate civilian wearable sanity check. Not a medical device; does not diagnose."

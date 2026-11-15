@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spacehealth.local/contracts/mission.schema.json",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "0.2.0"
+    },
+    "simulated": {
+      "const": true
+    },
+    "generator": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "integer",
+      "not": {
+        "exclusiveMinimum": 1.7976931348623157e+308
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "crew": {
+      "type": "array",
+      "items": {
+        "$ref": "crew-member.schema.json"
+      },
+      "minItems": 1
+    },
+    "readings": {
+      "type": "array",
+      "items": {
+        "$ref": "daily-reading.schema.json"
+      }
+    },
+    "radiationEvents": {
+      "type": "array",
+      "items": {
+        "$ref": "radiation-event.schema.json"
+      }
+    },
+    "truth": {
+      "type": "array",
+      "items": {
+        "$ref": "scenario-truth.schema.json"
+      }
+    },
+    "missionProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "const": "mars_transit_v1"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "durationDays": {
+          "const": 180
+        },
+        "gcr_background_msv_day": {
+          "type": "number"
+        },
+        "comms_one_way_delay_min": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "min",
+            "max"
+          ]
+        },
+        "blackouts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "startDay": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 180
+              },
+              "endDay": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 180
+              }
+            },
+            "required": [
+              "startDay",
+              "endDay"
+            ]
+          }
+        },
+        "spe_event_timing_source": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "durationDays",
+        "gcr_background_msv_day",
+        "comms_one_way_delay_min",
+        "blackouts",
+        "spe_event_timing_source"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "simulated",
+    "generator",
+    "seed",
+    "createdAt",
+    "crew",
+    "readings",
+    "radiationEvents",
+    "truth",
+    "missionProfile"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,154 @@
+{
+  "cards": [
+    {
+      "assumption_ids": [
+        "A2",
+        "A6",
+        "A7"
+      ],
+      "do_now": [
+        "Check that your wearable was worn and fitted correctly last night.",
+        "Complete today's symptom check-in."
+      ],
+      "ground_escalation": "Optional: queue a note for the flight surgeon; replies may be delayed.",
+      "heading": "Physiological change",
+      "id": "physiological-change",
+      "onboard_escalation": "Tell the onboard CMO if you have symptoms or if this continues for another night.",
+      "recheck": "Tomorrow's overnight readings and check-in.",
+      "source_ids": [
+        "Li2017",
+        "Mishra2020",
+        "Alavi2022"
+      ],
+      "status": "watch",
+      "uncertainty": "These changes are nonspecific. Poor sleep, hard exercise, stress or illness can all cause them. This is not a diagnosis.",
+      "why": "{signals} have moved away from your preflight normal for {days} nights in a row."
+    },
+    {
+      "assumption_ids": [
+        "A2",
+        "A7"
+      ],
+      "do_now": [
+        "Follow the mission-approved symptom assessment procedure.",
+        "Contact the onboard CMO today."
+      ],
+      "ground_escalation": "CMO decides whether to message the flight surgeon; message is queued if the link is down.",
+      "heading": "Physiological change \u2014 check symptoms",
+      "id": "physiological-change-act",
+      "onboard_escalation": "Contact the onboard CMO now.",
+      "recheck": "As directed by the CMO or the approved procedure.",
+      "source_ids": [
+        "Mishra2020",
+        "Alavi2022"
+      ],
+      "status": "act",
+      "uncertainty": "The pattern can occur with illness but does not confirm one.",
+      "why": "{signals} have shifted strongly or together with reported symptoms ({symptoms})."
+    },
+    {
+      "assumption_ids": [
+        "A7"
+      ],
+      "do_now": [
+        "Contact the onboard CMO now.",
+        "Follow the mission-approved procedure for this symptom."
+      ],
+      "ground_escalation": "CMO decides; queued if the link is down.",
+      "heading": "Symptom needs attention",
+      "id": "symptom-escalation",
+      "onboard_escalation": "Contact the onboard CMO now.",
+      "recheck": "As directed by the CMO.",
+      "source_ids": [],
+      "status": "act",
+      "uncertainty": "SpaceHealth cannot assess this symptom. A person must.",
+      "why": "You reported {symptoms}."
+    },
+    {
+      "assumption_ids": [
+        "A7"
+      ],
+      "do_now": [
+        "Plan a protected sleep opportunity tonight if the schedule allows.",
+        "Consider extra cross-checks on safety-critical tasks today."
+      ],
+      "ground_escalation": "Optional: queue a schedule note for ground planners.",
+      "heading": "Sleep shorter than your normal",
+      "id": "sleep-short",
+      "onboard_escalation": "Tell the onboard CMO if you feel impaired or this continues.",
+      "recheck": "Tomorrow's sleep estimate.",
+      "source_ids": [
+        "FlynnEvans2016",
+        "Barger2014"
+      ],
+      "status": "watch",
+      "uncertainty": "Sleep estimates from a wrist device can be off. This does not measure how alert you are.",
+      "why": "You slept {hours} h, below your usual range, for {nights} nights."
+    },
+    {
+      "assumption_ids": [
+        "A7"
+      ],
+      "do_now": [
+        "Tell the onboard CMO and the commander before starting safety-critical tasks.",
+        "Arrange a protected recovery sleep opportunity as soon as the schedule allows."
+      ],
+      "ground_escalation": "Queue a schedule note for ground planners.",
+      "heading": "Sleep debt building up",
+      "id": "sleep-debt",
+      "onboard_escalation": "Tell the onboard CMO today.",
+      "recheck": "After the next sleep period.",
+      "source_ids": [
+        "VanDongen2003",
+        "Belenky2003",
+        "NASA-HRP-Sleep2016"
+      ],
+      "status": "act",
+      "uncertainty": "In sleep-restriction studies, alertness kept falling with accumulated sleep loss while people felt only slightly sleepier. How you feel may underestimate the effect.",
+      "why": "Over the last 7 nights you slept {debt_h} h less than your preflight normal \u2014 about one full night of lost sleep."
+    },
+    {
+      "assumption_ids": [
+        "A8"
+      ],
+      "do_now": [
+        "Follow the mission's approved solar particle event procedure now, including moving to the designated shelter if the procedure says so.",
+        "Keep your personal dosimeter on."
+      ],
+      "ground_escalation": "Log for ground; the procedure does not wait for a reply.",
+      "heading": "Solar particle event warning",
+      "id": "radiation-spe-procedure",
+      "onboard_escalation": "Confirm with the crew/commander that everyone is following the procedure.",
+      "recheck": "When the all-clear is given.",
+      "source_ids": [
+        "NASA-STD-3001-V1C",
+        "OCHMO-TB-020"
+      ],
+      "status": "act",
+      "uncertainty": "Dose so far today is {dose_today} mSv{partial_text}.",
+      "why": "A space-weather warning is active{rate_text}."
+    },
+    {
+      "assumption_ids": [
+        "A8"
+      ],
+      "do_now": [
+        "Review upcoming activities that add dose with the crew."
+      ],
+      "ground_escalation": "Queue a budget summary for ground.",
+      "heading": "Radiation budget",
+      "id": "radiation-budget",
+      "onboard_escalation": "Discuss with the commander/CMO if planned activities would exceed the mission plan.",
+      "recheck": "Weekly.",
+      "source_ids": [
+        "NASA-STD-3001-V1C",
+        "Zeitlin2013"
+      ],
+      "status": "watch",
+      "uncertainty": "{career_unknown_text}Background rate measured on the way to Mars was about 1.84 mSv/day.",
+      "why": "Mission dose {mission_dose} mSv{career_text} \u2014 {pct}% of the 600 mSv career limit."
+    }
+  ],
+  "schemaVersion": "0.2.0",
+  "source": "research/cards.yaml"
+}

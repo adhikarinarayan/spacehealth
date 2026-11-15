@@ -1,0 +1,54 @@
+# v1 scenario set (Discussion §2.2) — DRAFT v0.1 · Owner: Claude · Verify: Narayan/B
+# All effect sizes are SIMULATION ASSUMPTIONS (A2, A11) unless a source is given.
+# onset / symptom / detection / recovery are separate fields; a symptom day does not prove an infection existed earlier.
+mission: {profile: mars_transit_v1, crew: [C1, C2, C3, C4], preflight_days: [-14, -1], mission_days: [1, 180]}
+
+scenarios:
+  S1:
+    required: true
+    what: quiet mission, normal noise only, all 4 crew
+    truth: {moduleId: null, onsetDay: null}
+    pass: "no act without a defined cause; REPORT routine false alerts per 100 evaluable crew-days (no fixed threshold — target set by Narayan after toy run)"
+  S2:
+    required: true
+    crew: C2
+    moduleId: physiological_change
+    onsetDay: 40
+    symptomDay: 42
+    endDay: 48
+    effects:   # ramp in over 2 days, hold, recover by day 48
+      rhr_bpm: "+5.6 bpm (dev); holdout per-person U(3.1, 8.6)"       # GROUNDED: Mishra2020 Supp. Table 14 (grounding.md §1)
+      hrv_rmssd_ms: "-0.5 to -1.0 x own preflight SD"                 # DIRECTION-GROUNDED: Natarajan2020, Mason2022
+      skin_temp_delta_c: "+0.5 to +1.0 x own preflight SD (nightly)"  # DIRECTION-GROUNDED: Mason2022, Smarr2020
+      symptoms_from_42: [sore_throat, fatigue]
+    pass: "watch or act by day 42; evidence lists the shifted signals with directions; text contains no diagnosis ('infection detected' forbidden)"
+  S3:
+    required: true
+    crew: all
+    moduleId: radiation
+    onsetDay: 72
+    timeline: "REPLAYS REAL NASA DONKI SEP ONSETS (D15): GOES-13 (near-Earth) onsets from research/data/raw/nasa_donki_sep/SEP_2017-08-15_2017-10-10.json — 2017-09-05T00:30Z (>10 MeV), 2017-09-06T23:45Z (>10 MeV), 2017-09-10T16:25Z (>100 MeV) / 16:45Z (>10 MeV), grouped into 3 episodes. Offsets preserved; first onset mapped to mission day 72 at 00:30. Each episode starts a warning and a dose-rate pulse (rise ~2 h, exponential decay); the 3 episodes share the 19.5 mSv total equally (A3b). Observed near Earth, not at a Mars-transit vehicle — label as 'timing modelled on'."
+    event_total_dose_msv: "19.5 mSv over ~9 days, front-loaded (dev). GROUNDED: Zeitlin2013 Table 1, Mar 7-15 2012. Holdout x0.2 / x1 / x5"
+    shelter_effect: "assumption: sheltered crew dose rate reduced; only if card 'done' recorded — v1 does NOT model it (keep simple)"
+    pass: "radiation act at the first warning sample (same day, before end-of-day); daily and cumulative doses equal independent integration within 1e-6; dose_coverage<1 shown as partial"
+  S4:
+    required: true
+    crew: C3
+    moduleId: sleep_alertness
+    onsetDay: 95
+    endDay: 101
+    effects: {sleep_hours: "5.0-5.4 h for 7 nights"}  # GROUNDED: FlynnEvans2016 misaligned 5.4 h; NASA Sleep Evidence Report 2016
+    pass: "watch by day 97; any act requires a documented rule using available inputs (no PVT in v1 ⇒ no act from sleep alone)"
+  N1:
+    required: true
+    crew: C1
+    what: "isolated RHR rises (+5 to +10 bpm, single days 60, 61, 110) with no other signal change and no symptoms"  # GROUNDED magnitude: Quer2020 (20% have a week with >=10 bpm swing)
+    pass: "no act; never infection wording; watch days allowed but REPORTED as a cost (D14, Narayan: matches Discussion N1 'no unjustified emergency alert')"
+  N2:
+    required: true
+    crew: C4
+    what: "(a) only 8 valid preflight days for hrv; (b) wearable gap days 120–124 (rhr/hrv/temp null); (c) check-in skipped days 130–131"
+    pass: "unknown where data insufficient/missing; never nominal on missing; no crash; skipped check-in ≠ 'no symptoms'"
+later:
+  S5: "slow mood decline — ordinal trend rule, not z-score"
+  S6: "missed exercise — adherence notice, not bone loss"

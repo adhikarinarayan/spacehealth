@@ -1,0 +1,23 @@
+# TASK-004: supplied literature/default parameters. No stage-1 tuning.
+seed_set: dev
+allowed_seeds: [0, 1, 2]
+mission_days: [1, 180]
+signals: [rhr_bpm, hrv_rmssd_ms, skin_temp_delta_c]
+missing_state_policy: reset
+M0: {rhr_bpm: 75, consecutive_days: 2}
+M1: {source: research/rules.yaml}
+M1b: {rhr_z: 2.0, corroborating_z: 1.0, consecutive_days: 2}
+M2: {k: 0.5, h: 4.0, nominal_reset_days: 3}
+M3: {lambda: 0.2, control_sigma: 3.0}
+M4: {watch_delta_bpm: 4.0, consecutive_days: 2, yellow_delta_bpm: 3.0}
+M5: {quantile: 0.99, consecutive_days: 2, covariance: LedoitWolf, assume_centered: false}
+M6: {percentile: 1, consecutive_days: 2, n_estimators: 100, random_state: 0, max_samples: auto, contamination: auto, n_jobs: 1}
+evaluation:
+  s2_window: [40, 48]
+  false_alert_exclude_s2_window: [40, 50]
+  n1_days: [60, 61, 110]
+  n1_radius_days: 2
+  n2_gap_days: [120, 124]
+  n2_skipped_checkin_days: [130, 131]
+discard:
+  misses_in_three: 2

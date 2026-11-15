@@ -1,0 +1,101 @@
+# Action cards (Discussion §2.4 template) — DRAFT v0.1 · Owner: Claude · MUST be verified by Narayan/B before demo
+# Rendered verbatim by the dashboard. No diagnoses. Procedural steps point to mission-approved procedures; we do not invent medical treatment.
+# Mission profile: Mars-class transit (D10) — ground replies may take up to ~40 min round trip or be unavailable in blackout.
+
+cards:
+  - id: physiological-change
+    status: watch
+    heading: Physiological change
+    why: "{signals} have moved away from your preflight normal for {days} nights in a row."
+    uncertainty: "These changes are nonspecific. Poor sleep, hard exercise, stress or illness can all cause them. This is not a diagnosis."
+    do_now:
+      - "Check that your wearable was worn and fitted correctly last night."
+      - "Complete today's symptom check-in."
+    recheck: "Tomorrow's overnight readings and check-in."
+    onboard_escalation: "Tell the onboard CMO if you have symptoms or if this continues for another night."
+    ground_escalation: "Optional: queue a note for the flight surgeon; replies may be delayed."
+    source_ids: [Li2017, Mishra2020, Alavi2022]
+    assumption_ids: [A2, A6, A7]
+
+  - id: physiological-change-act
+    status: act
+    heading: Physiological change — check symptoms
+    why: "{signals} have shifted strongly or together with reported symptoms ({symptoms})."
+    uncertainty: "The pattern can occur with illness but does not confirm one."
+    do_now:
+      - "Follow the mission-approved symptom assessment procedure."
+      - "Contact the onboard CMO today."
+    recheck: "As directed by the CMO or the approved procedure."
+    onboard_escalation: "Contact the onboard CMO now."
+    ground_escalation: "CMO decides whether to message the flight surgeon; message is queued if the link is down."
+    source_ids: [Mishra2020, Alavi2022]
+    assumption_ids: [A2, A7]
+
+  - id: symptom-escalation
+    status: act
+    heading: Symptom needs attention
+    why: "You reported {symptoms}."
+    uncertainty: "SpaceHealth cannot assess this symptom. A person must."
+    do_now:
+      - "Contact the onboard CMO now."
+      - "Follow the mission-approved procedure for this symptom."
+    recheck: "As directed by the CMO."
+    onboard_escalation: "Contact the onboard CMO now."
+    ground_escalation: "CMO decides; queued if the link is down."
+    source_ids: []
+    assumption_ids: [A7]
+
+  - id: sleep-short
+    status: watch
+    heading: Sleep shorter than your normal
+    why: "You slept {hours} h, below your usual range, for {nights} nights."
+    uncertainty: "Sleep estimates from a wrist device can be off. This does not measure how alert you are."
+    do_now:
+      - "Plan a protected sleep opportunity tonight if the schedule allows."
+      - "Consider extra cross-checks on safety-critical tasks today."
+    recheck: "Tomorrow's sleep estimate."
+    onboard_escalation: "Tell the onboard CMO if you feel impaired or this continues."
+    ground_escalation: "Optional: queue a schedule note for ground planners."
+    source_ids: [FlynnEvans2016, Barger2014]
+    assumption_ids: [A7]
+
+  - id: sleep-debt
+    status: act
+    heading: Sleep debt building up
+    why: "Over the last 7 nights you slept {debt_h} h less than your preflight normal — about one full night of lost sleep."
+    uncertainty: "In sleep-restriction studies, alertness kept falling with accumulated sleep loss while people felt only slightly sleepier. How you feel may underestimate the effect."
+    do_now:
+      - "Tell the onboard CMO and the commander before starting safety-critical tasks."
+      - "Arrange a protected recovery sleep opportunity as soon as the schedule allows."
+    recheck: "After the next sleep period."
+    onboard_escalation: "Tell the onboard CMO today."
+    ground_escalation: "Queue a schedule note for ground planners."
+    source_ids: [VanDongen2003, Belenky2003, NASA-HRP-Sleep2016]
+    assumption_ids: [A7]
+
+  - id: radiation-spe-procedure
+    status: act
+    heading: Solar particle event warning
+    why: "A space-weather warning is active{rate_text}."
+    uncertainty: "Dose so far today is {dose_today} mSv{partial_text}."
+    do_now:
+      - "Follow the mission's approved solar particle event procedure now, including moving to the designated shelter if the procedure says so."
+      - "Keep your personal dosimeter on."
+    recheck: "When the all-clear is given."
+    onboard_escalation: "Confirm with the crew/commander that everyone is following the procedure."
+    ground_escalation: "Log for ground; the procedure does not wait for a reply."
+    source_ids: [NASA-STD-3001-V1C, OCHMO-TB-020]
+    assumption_ids: [A8]
+
+  - id: radiation-budget
+    status: watch
+    heading: Radiation budget
+    why: "Mission dose {mission_dose} mSv{career_text} — {pct}% of the 600 mSv career limit."
+    uncertainty: "{career_unknown_text}Background rate measured on the way to Mars was about 1.84 mSv/day."
+    do_now:
+      - "Review upcoming activities that add dose with the crew."
+    recheck: "Weekly."
+    onboard_escalation: "Discuss with the commander/CMO if planned activities would exceed the mission plan."
+    ground_escalation: "Queue a budget summary for ground."
+    source_ids: [NASA-STD-3001-V1C, Zeitlin2013]
+    assumption_ids: [A8]

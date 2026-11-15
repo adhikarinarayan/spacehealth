@@ -1,0 +1,48 @@
+# Module detection rules (Discussion §2.3) — DRAFT v0.1 · Owner: Claude · Verify: Narayan/B · Implement: Codex
+# These are the M1 default rules. Model experiments may change numbers; every change is logged in model/EXPERIMENT_LOG.md and DECISIONS.md.
+
+baseline:   # Discussion §1.4
+  window: preflight days -14..-1, fixed for the whole mission (no rolling update in v1)
+  center: median(valid preflight values)
+  scale: max(1.4826 * MAD, signals.yaml min_scale)
+  min_valid_days: 10          # A6 engineering assumption; Alavi2022 Ext. Data: baseline stable after ~7 nights for >80% (supports)
+  insufficient: "fewer than min_valid_days ⇒ that signal is 'insufficient'"
+  no_future_data: "evaluation on day d uses only data from days ≤ d"
+
+physiological_change:
+  signals: {rhr_bpm: up, hrv_rmssd_ms: down, skin_temp_delta_c: up}
+  shifted_day: "signal z beyond ±2.0 in its direction"                  # A7
+  watch: "≥2 signals shifted on each of 2 consecutive days"              # A7
+  act:
+    - "watch AND any red-flag symptom today"
+    - "≥2 signals with z beyond ±3.0 on 2 consecutive days"             # A7
+  symptom_only:
+    red_flag: [fever, shortness_of_breath, chest_pain, fainting, vision_change]   # NEEDS B REVIEW
+    rule: "red-flag symptom ⇒ act regardless of signals (card: symptom-escalation); other symptoms with no signal shift ⇒ nominal + 'symptoms logged' note"
+  unknown: "fewer than 2 of the 3 signals evaluable today (missing or insufficient baseline)"
+  correlated_note: "rhr and hrv come from the same wearable — reason text must not present them as independent confirmations"
+  forbidden_words: ["infection detected", "you have", "diagnosis", "diagnosed"]
+  heading_watch: "Physiological change"
+  heading_act: "Physiological change — check symptoms"
+
+sleep_alertness:
+  signals: {sleep_hours: down}
+  watch: "sleep_hours z ≤ -2.0 on 2 consecutive nights"                 # A7
+  act: "sum over the last 7 nights of max(0, baseline_sleep_hours - sleep_hours) >= 8.16 h  (extra wakefulness vs own preflight normal ≈ one night of total sleep deprivation). Missing nights are not counted as 0 debt: if <5 of 7 nights valid, act cannot be evaluated (stay watch/unknown)."   # GROUNDED magnitude: VanDongen2003 (lapses ~linear in cumulative wake >15.84 h/day; 24-15.84 = 8.16 h); relative-to-baseline application = R3 (Narayan)
+  context_absolute_debt: "also compute Van Dongen absolute excess wakefulness sum(max(0, 8.16 - sleep_hours)) over 7 nights; show as information only, never as a status"
+  unknown: "sleep_hours missing today or insufficient baseline"
+
+radiation:
+  not_baseline_based: true
+  act_warning: "any spe_warning=true sample ⇒ act immediately for that crew/day (card radiation-spe-procedure); stays act until warning cleared + 1 day"
+  rate_tiers:   # STRUCTURE grounded (NASA Artemis II two-tier caution/shelter; HERA seminar). NUMBERS NOT PUBLIC → mission-configurable placeholders, labelled as such in UI
+    caution_watch_msv_h: "placeholder (configurable)"
+    shelter_act_msv_h: "placeholder (configurable)"
+  watch_budget: "prior_career (if known) + mission dose so far + remaining_days × background ≥ 600 mSv"   # GROUNDED: [V1 4030]; Zeitlin2013; Hassler2014
+  integration: "trapezoid between consecutive time-stamped samples within the day; dose_coverage = covered hours / 24"   # A8
+  career_unknown: "if prior_career_dose_msv is null, show 'career total unknown — mission dose only'"
+  never: "250 mSv is a vehicle design requirement [V1 4031], NOT an alert trigger"
+
+card_cap:
+  routine_max: 3
+  never_capped: ["any act from radiation", "red-flag symptom act"]

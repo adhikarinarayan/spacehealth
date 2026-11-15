@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spacehealth.local/contracts/radiation-event.schema.json",
+  "type": "object",
+  "properties": {
+    "crewId": {
+      "enum": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    "missionDay": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": -14,
+          "maximum": -1,
+          "not": {
+            "exclusiveMinimum": 1.7976931348623157e+308
+          }
+        },
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180,
+          "not": {
+            "exclusiveMinimum": 1.7976931348623157e+308
+          }
+        }
+      ]
+    },
+    "timeHoursFromDayStart": {
+      "type": "number",
+      "minimum": 0,
+      "exclusiveMaximum": 24,
+      "not": {
+        "exclusiveMinimum": 1.7976931348623157e+308
+      }
+    },
+    "spe_warning": {
+      "type": "boolean"
+    },
+    "dose_rate_msv_h": {
+      "anyOf": [
+        {
+          "type": "number",
+          "not": {
+            "exclusiveMinimum": 1.7976931348623157e+308
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "crewId",
+    "missionDay",
+    "timeHoursFromDayStart",
+    "spe_warning",
+    "dose_rate_msv_h"
+  ],
+  "additionalProperties": false
+}

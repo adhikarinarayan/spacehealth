@@ -1,0 +1,579 @@
+{
+  "schemaVersion": "0.2.0",
+  "simulated": true,
+  "modelId": "fixture",
+  "configHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "missionFile": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "indicators": [
+    {
+      "crewId": "C1",
+      "missionDay": 1,
+      "moduleId": "sleep_alertness",
+      "status": "nominal",
+      "dataQuality": "missing",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 1,
+      "moduleId": "physiological_change",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 1,
+      "moduleId": "radiation",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 2,
+      "moduleId": "sleep_alertness",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 2,
+      "moduleId": "physiological_change",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 2,
+      "moduleId": "radiation",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 3,
+      "moduleId": "sleep_alertness",
+      "status": "act",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 3,
+      "moduleId": "physiological_change",
+      "status": "act",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 3,
+      "moduleId": "radiation",
+      "status": "act",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 4,
+      "moduleId": "sleep_alertness",
+      "status": "unknown",
+      "dataQuality": "missing",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": null,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 4,
+      "moduleId": "physiological_change",
+      "status": "unknown",
+      "dataQuality": "missing",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": null,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 4,
+      "moduleId": "radiation",
+      "status": "unknown",
+      "dataQuality": "missing",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": null,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 5,
+      "moduleId": "sleep_alertness",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 5,
+      "moduleId": "physiological_change",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 5,
+      "moduleId": "radiation",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 6,
+      "moduleId": "sleep_alertness",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 6,
+      "moduleId": "physiological_change",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 6,
+      "moduleId": "radiation",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 7,
+      "moduleId": "sleep_alertness",
+      "status": "act",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 7,
+      "moduleId": "physiological_change",
+      "status": "act",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 7,
+      "moduleId": "radiation",
+      "status": "act",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 8,
+      "moduleId": "sleep_alertness",
+      "status": "unknown",
+      "dataQuality": "missing",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": null,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 8,
+      "moduleId": "physiological_change",
+      "status": "unknown",
+      "dataQuality": "missing",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": null,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 8,
+      "moduleId": "radiation",
+      "status": "unknown",
+      "dataQuality": "missing",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": null,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 9,
+      "moduleId": "sleep_alertness",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 9,
+      "moduleId": "physiological_change",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 9,
+      "moduleId": "radiation",
+      "status": "nominal",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 10,
+      "moduleId": "sleep_alertness",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 10,
+      "moduleId": "physiological_change",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    },
+    {
+      "crewId": "C1",
+      "missionDay": 10,
+      "moduleId": "radiation",
+      "status": "watch",
+      "dataQuality": "valid",
+      "reason": "Illustrative contract fixture only.",
+      "evidence": [
+        {
+          "signalId": "sleep_hours",
+          "value": 8,
+          "unit": "hours"
+        }
+      ],
+      "sourceIds": [],
+      "assumptionIds": [
+        "FIXTURE-01"
+      ]
+    }
+  ]
+}

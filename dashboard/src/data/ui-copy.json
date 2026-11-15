@@ -1,0 +1,174 @@
+{
+  "panels": {
+    "mission_header": {
+      "title": "Mission status",
+      "what_for": "Where the mission is and how cut off from Earth you are. Messages to the ground take minutes each way and may not get through during a blackout, so the crew acts first.",
+      "how_to_read": "Day {day} of {duration}. Comms delay is the one-way time for a message to reach Earth.",
+      "blackout_active": "Link to Earth: down (blackout). Messages to the ground wait until the link returns — use the onboard crew medical officer for anything that cannot wait.",
+      "blackout_inactive": "Link to Earth: up today, with a delay of several minutes each way. On a real Mars mission the link is lost for about two weeks when the Sun is between Earth and Mars; this simulated mission does not include that period."
+    },
+    "radiation_budget": {
+      "title": "Radiation budget",
+      "what_for": "How much space radiation you have received this mission, and where you are heading by mission end, compared with NASA's 600 mSv career limit.",
+      "how_to_read": "Solid bar: dose received so far. Lighter bar: projected total if the background rate continues ({rate} mSv/day). Prior missions are included only if known.",
+      "career_unknown": "Your dose from earlier missions is not recorded here, so the career total is unknown. Only this mission is shown.",
+      "source_note": "Limit: NASA-STD-3001 Vol 1 Rev C. Background rate: measured on the way to Mars (Zeitlin et al. 2013)."
+    },
+    "today_tiles": {
+      "title": "Today",
+      "what_for": "One tile per health area. Each compares today's readings with your own normal, measured in the 14 days before launch.",
+      "how_to_read": "Nominal: within your usual range. Watch: a sustained change worth checking. Act: follow the card now. No reliable data: readings are missing or too few to judge — this is not the same as normal."
+    },
+    "attention_cards": {
+      "title": "Needs attention",
+      "what_for": "The next steps for anything flagged. Urgent items always appear first and are never hidden; routine items are limited to three so the list stays readable.",
+      "how_to_read": "Each card says why it appeared, how sure the system is, what to do now, when to check again, and who to involve. Urgent cards are marked Act.",
+      "empty": "Nothing needs attention today. Keep wearing your sensors and completing check-ins so this stays reliable."
+    },
+    "detail": {
+      "title": "Detail",
+      "what_for": "The evidence behind a tile: your recent readings against your preflight normal, what changed, and the suggested next step.",
+      "how_to_read": "The shaded band is your usual range. Gaps in a line are missing readings, not zeros.",
+      "chart_legend": "Line: your nightly reading. Dark line: your preflight normal. Shaded band: your usual range around it. Gap: no reading that night.",
+      "no_action": "No action is needed for this area today. The chart is shown for information."
+    },
+    "crew_grid": {
+      "title": "Crew overview",
+      "what_for": "Every crewmember's status in each health area on the selected day, so the crew medical officer can see who may need a check-in.",
+      "how_to_read": "Select a cell to open that person's detail. In a real mission each astronaut would choose what is shared."
+    },
+    "timeline": {
+      "title": "Mission log",
+      "what_for": "Everything that happened, in order: when flags started and cleared, space-weather warnings, and actions recorded on this device.",
+      "how_to_read": "Recorded actions show that a step was logged, not that it caused any later change.",
+      "empty": "No changes recorded for this selection yet."
+    },
+    "replay": {
+      "title": "Mission replay",
+      "what_for": "Play the simulated mission day by day to see when changes happen and when SpaceHealth flags them.",
+      "how_to_read": "Markers show when each simulated event really started. They are visible only here, never on the Today screen."
+    },
+    "validation": {
+      "title": "Validation (simulated)",
+      "what_for": "How the detectors performed on simulated missions where we know the truth: whether each event was caught, how early or late, and how many false alerts occurred.",
+      "how_to_read": "These are synthetic-scenario results, not clinical validation.",
+      "mock_note": "These numbers are placeholder mock values for building the screen. They are not results from the SpaceHealth model.",
+      "holdout_title": "Final test: locked settings, new simulated missions, run once",
+      "holdout_lines": [
+        "Illness-like change: caught by the day symptoms started in 25 of 40 simulated missions (62 %), and within a few days in 39 of 40. Bigger heart-rate rises were caught earlier; the smallest were usually caught 1–4 days after symptoms began.",
+        "A week of short sleep: flagged by day 97 in 26 of 40 missions. 11 were never flagged — mostly when that person's sleep dropped only a little below their normal.",
+        "Solar storms: every warning in the replayed storm (real timing from NASA's DONKI space-weather database) triggered an immediate Act for every crew member.",
+        "Heart-rate spikes from exercise never raised an Act, and missing readings were always shown as 'No reliable data'.",
+        "False alarms: about 1–2 'Watch' alerts per crew member over a 180-day mission for body signals, and about 1 for sleep."
+      ],
+      "holdout_note": "We chose the detection method and locked its settings before this test, then ran it once. These results come from simulated missions — not from real astronauts or a clinical study.",
+      "release_case_note": "This simulated mission was chosen before any results were seen.",
+      "illustrative_case_note": "Showcase mission: a simulated mission we picked after testing because it shows every feature. It is a typical result, not our best. To see how the system does overall — including what it missed — open Validation or switch to the blind test mission.",
+      "preselected_case_note": "Blind test mission: a simulated mission we chose before seeing any results, so it shows the system as it really performs. Here the illness warning came one day after symptoms started, and the week of short sleep was not flagged. Overall results are in Validation."
+    }
+  },
+  "theme": {
+    "trajectory_label": "Earth → Mars transit · day {day} of {duration}",
+    "trajectory_note": "Illustrative progress along a simulated transit; not a navigation display.",
+    "comms_link": "Message to Earth: about {minutes} min one way (illustrative)",
+    "comms_blackout": "Link down — messages to Earth are held until it returns",
+    "storm_banner_title": "Solar particle event warning",
+    "storm_banner_body": "Follow the mission's approved solar particle event procedure. Details are in the radiation card.",
+    "storm_banner_note": "Event timing replays real solar activity recorded by NASA's DONKI database (September 2017, observed near Earth).",
+    "ship_clock": "Mission day {day} · {time} ship time",
+    "ship_clock_daily": "Mission day {day}",
+    "crew_badge_note": "Simulated crewmembers C1–C4. Not real people.",
+    "orrery": {
+      "title": "Mission overview",
+      "lead": "Crew health, read from {minutes} light-minutes away.",
+      "stat_day": "Mission day",
+      "stat_transit": "Transit",
+      "stat_delay": "Signal delay",
+      "stat_delay_unit": "min one-way (illustrative)",
+      "stat_blackout": "Blackout",
+      "blackout_none": "None in this simulation",
+      "blackout_now": "Link down",
+      "scrub_label": "Scrub the mission",
+      "caption": "Earth → Mars transfer",
+      "aria": "Diagram: spacecraft {pct}% of the way from Earth to Mars on mission day {day}. Orbits not to scale."
+    }
+  },
+  "states": {
+    "load_error": "SpaceHealth could not load or check its data files, so no health status is shown. Showing partial data could be misleading.",
+    "indicator_unavailable": "No assessment is available for this area on this day. This is not the same as normal."
+  },
+  "actions": {
+    "recorded": "Action recorded on this device at {time}. Recording a step does not confirm it was completed or that it changed anything."
+  },
+  "glossary": {
+    "baseline": "Your personal normal, from preflight measurements.",
+    "watch": "A sustained change worth checking.",
+    "act": "Follow the action card now.",
+    "unknown": "Not enough reliable data to judge.",
+    "mSv": "Millisievert, a unit of radiation dose.",
+    "CMO": "Crew medical officer — the crewmember trained to provide medical care on board."
+  },
+  "self_care": {
+    "heading": "Self-care while you check",
+    "disclaimer": "General guidance, not treatment. It does not replace the action card, mission procedures or the crew medical officer.",
+    "cards": {
+      "physiological-change": {
+        "steps": [
+          "Rest when your schedule allows and drink fluids regularly.",
+          "Take and log your temperature at your next check-in.",
+          "Wash your hands often and use your own cup and utensils, to protect your crewmates.",
+          "Wipe shared surfaces you have touched and keep cabin air circulation on."
+        ],
+        "sources": "CDC, Preventing Respiratory Illnesses (2025); Crucian et al. 2018 (spaceflight infection-control countermeasures)."
+      },
+      "physiological-change-act": {
+        "steps": [
+          "Contact the crew medical officer first; follow their instructions over this list.",
+          "Until then: rest, drink fluids, and keep a short distance from crewmates where the habitat allows.",
+          "Wash your hands, use your own cup and utensils, and wipe shared surfaces."
+        ],
+        "sources": "CDC, Preventing Respiratory Illnesses (2025); Crucian et al. 2018."
+      },
+      "symptom-escalation": {
+        "steps": [
+          "Contact the crew medical officer now — do not wait for the next check-in.",
+          "Stop strenuous or safety-critical work until you have spoken to them."
+        ],
+        "sources": "Mission medical procedures take priority over any app guidance."
+      },
+      "sleep-short": {
+        "steps": [
+          "Protect your next sleep period: dark, quiet sleep station, screens off before sleep.",
+          "If the schedule allows, take a short planned nap; in NASA's flight study a 40-minute rest gave about 26 minutes of sleep and better alertness afterwards.",
+          "Get bright light after waking and keep lighting dim before sleep, to help your body clock.",
+          "Avoid caffeine late in your day; it can make it harder to fall asleep.",
+          "Ask a crewmate to double-check safety-critical steps today."
+        ],
+        "sources": "Rosekind et al. 1994 (NASA TM-108839, planned in-flight rest); NASA HRP sleep evidence report (Flynn-Evans et al. 2016)."
+      },
+      "sleep-debt": {
+        "steps": [
+          "Tell the commander and the crew medical officer before safety-critical tasks; feeling fine is not a reliable sign that alertness is fine.",
+          "Plan recovery sleep over the next nights — one night is often not enough.",
+          "Use a short planned nap if the schedule allows; protect your next sleep period.",
+          "Avoid caffeine late in your day; get bright light after waking."
+        ],
+        "sources": "Van Dongen et al. 2003; Belenky et al. 2003; Rosekind et al. 1994; NASA HRP sleep evidence report."
+      },
+      "radiation-spe-procedure": {
+        "steps": [
+          "Follow the mission's solar particle event procedure now; move to the designated shelter if it says so.",
+          "Stay in the most shielded area until the all-clear and keep your personal dosimeter on."
+        ],
+        "sources": "NASA-STD-3001 Vol 1 Rev C; NASA OCHMO radiation protection technical brief."
+      },
+      "radiation-budget": {
+        "steps": [
+          "Review upcoming activities that add dose (for example outside work) with the crew.",
+          "Keep your personal dosimeter on and readings logged."
+        ],
+        "sources": "NASA-STD-3001 Vol 1 Rev C (ALARA principle and career limit)."
+      }
+    }
+  }
+}

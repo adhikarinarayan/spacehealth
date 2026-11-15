@@ -1,0 +1,136 @@
+{
+  "N1": {
+    "actDays": [],
+    "watchDays": [
+      60,
+      61,
+      62,
+      63,
+      64
+    ]
+  },
+  "N2": {
+    "unknownDays": [
+      120,
+      121,
+      122,
+      123,
+      124
+    ]
+  },
+  "S2": {
+    "endDay": 48,
+    "firstActDay": null,
+    "firstFlagDay": 43,
+    "firstWatchDay": 43,
+    "onsetDay": 40,
+    "passedBySymptomDay": false,
+    "symptomDay": 42
+  },
+  "codeHashes": {
+    "model/spacehealth_model/__init__.py": "641fb6929cb6fa6ef44773b4fa680ba52a770491a060ed3e6d9d64f02e3d9aa9",
+    "model/spacehealth_model/baseline/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/baseline/fixed.py": "0e619b86416bc5cb493db0a207e1e775b58c4c8c576b674a92762d73917005dd",
+    "model/spacehealth_model/compare.py": "27f81f1faca66cd58c8b700055b443d57cabdb26a37c210cdadbf5daf7ebc6fe",
+    "model/spacehealth_model/config.py": "a3fc002fc9a35c2ea2c253e23807f224c3804a2176050c67b6e1826243e351ec",
+    "model/spacehealth_model/contracts.py": "48e8c5f6a57a97c0341e2dc3bcafe9687be431b29df2ea3b91f497a944578885",
+    "model/spacehealth_model/data_sources/__init__.py": "bc05a42eeaa941c071fc10c8029c13d804cb166a06a4287e4b1a8acf6287812e",
+    "model/spacehealth_model/data_sources/donki.py": "634db3efb9b0a28cbab9646f70bb6bfd95123eb64dec31230b88a3c113e89076",
+    "model/spacehealth_model/detectors/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/detectors/candidates.py": "72821ef9364814bde93767329ac64a7914b4fd8dd74f75f69b0577f08c749345",
+    "model/spacehealth_model/evaluate/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/evaluate/frozen.py": "8e6d5e0bce91020de4e45df6e1a6df7b15e109bfefa41ebbfb91aa2b65bcdf92",
+    "model/spacehealth_model/evaluate/holdout.py": "f5be7b8c6ab40a2362d64b7a3af25cf313d44dfca39c0e518affd63b99bd33fa",
+    "model/spacehealth_model/evaluate/metrics.py": "962abf9c4bcc673ecf2139d10e7638c1178fd1574b3c788d7f89fadcd0daf660",
+    "model/spacehealth_model/evaluate/stage2.py": "334a2f23c3c1bb15da1c615bf677eabb62c457484058c4ac1ba1c45ee136bad7",
+    "model/spacehealth_model/export/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/export/files.py": "1018670f221fe687c462daad0bb0a2ab6cedcddecac490fe1af2cd4c218d93aa",
+    "model/spacehealth_model/export/release.py": "b6eb2fd48cab4be237bb616b51f4db49c0647d55c279808d5de0c5877f026703",
+    "model/spacehealth_model/modules/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/modules/physiological.py": "a799a21777261ef1d491d388870ba716a28ecf2ab12e78a00005a1790730adf5",
+    "model/spacehealth_model/modules/radiation.py": "5a96ca083c1726e512aea4129f855c93d5df8725fb4b6a9e42034baf10f72055",
+    "model/spacehealth_model/modules/sleep.py": "9de2d74a74f15d54e5a4920eef0e1a597277cd59f517db572741aa29e87bee5e",
+    "model/spacehealth_model/run.py": "948f32b4dfcc24f78313bbc8ccf43199e56289fa1aacddc52215a2bb3b150169",
+    "model/spacehealth_model/sim/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model/spacehealth_model/sim/generate.py": "f4dbf2376d4597f9f53bdecce16010534e3eee5938aad4a7a4c93ec011e8564f",
+    "model/spacehealth_model/sim/radiation.py": "c69677877923922b697f8cebe0b342bdedeaf01dd6dd2d2a87ecb1666b8e2b23",
+    "model/spacehealth_model/sim/space_weather.py": "005589b8d03852e1263d51b8f3564521cb9a9961695e33c6a23bb2de9a00c16c"
+  },
+  "configHash": "03632b3d13fbcc888a5bed3511939694989ed8a72c9e594c230035279bc2d7e0",
+  "core": {
+    "S3": {
+      "C1": {
+        "firstActDay": 72,
+        "firstActHour": 0.5
+      },
+      "C2": {
+        "firstActDay": 72,
+        "firstActHour": 0.5
+      },
+      "C3": {
+        "firstActDay": 72,
+        "firstActHour": 0.5
+      },
+      "C4": {
+        "firstActDay": 72,
+        "firstActHour": 0.5
+      }
+    },
+    "S4": {
+      "dailyRelativeDebtHours": {
+        "100": 3.2460006814019557,
+        "101": 3.8402819459641915,
+        "95": 3.2213476157765832,
+        "96": 3.0025441627790794,
+        "97": 3.3663248177114626,
+        "98": 3.81176167236534,
+        "99": 3.136462063272967
+      },
+      "firstActDay": null,
+      "firstWatchDay": null
+    },
+    "radiationPolicy": {
+      "caution_watch_msv_h": 0.1,
+      "placeholder": true,
+      "shelter_act_msv_h": 0.5
+    }
+  },
+  "dependencies": {
+    "PyYAML": "6.0.3",
+    "jsonschema": "4.26.0",
+    "matplotlib": "3.11.2",
+    "numpy": "2.4.6",
+    "pydantic": "2.14.3",
+    "scipy": "1.17.1"
+  },
+  "dose": {
+    "C1": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    },
+    "C2": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    },
+    "C3": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    },
+    "C4": {
+      "complete": true,
+      "observed_mission_dose_msv": 350.699999999999
+    }
+  },
+  "evaluableQuietCrewDays": 706,
+  "falseAlertsPer100QuietCrewDays": 0.9915014164305949,
+  "label": "synthetic-scenario results; frozen M3 with M5 info-only",
+  "notImplemented": [],
+  "routineFalseAlerts": 7,
+  "seed": 1000,
+  "statuses": {
+    "act": 0,
+    "nominal": 702,
+    "unknown": 5,
+    "watch": 13
+  }
+}

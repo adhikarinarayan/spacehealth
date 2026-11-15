@@ -1,0 +1,11 @@
+{
+  "artifactHashes": {
+    "results.csv": "1dc483c23fbc1c774fae160e98b2b4477d5e48239a0e8952b9e4554c47fdec08",
+    "results.json": "0279e42dad1748091c4cf74350340f612cd23c9ea102c44ba2f984f8ea4d2d46",
+    "summary.json": "77ef55412da820befc56ecfc1eb51cbbb0290dcb0e18b3c5e16c9abc7837aca6",
+    "summary.md": "86f6bf5a958a8424beb9870f5add16d44de3f31ebd890b8441ecef801c88527d"
+  },
+  "cases": 120,
+  "completedAt": "2026-11-15T18:37:11.014814+00:00",
+  "configHash": "9662bf1d498a9a729daf84c2dc73c92fcc7c0cd1943764ceaf886251b5289492"
+}

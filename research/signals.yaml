@@ -1,0 +1,82 @@
+# Signal contract table (Discussion §2.1) — research view
+# Owner: Claude (draft) · Verify: Narayan/B · Status: DRAFT v0.1 (Sat 2026-11-14)
+# label: evidence-backed | engineering assumption | unverified
+# sim_* fields are SIMULATION inputs only (realistic fake data). Detection never uses population ranges (except M0 comparator).
+# plausible_* = physical plausibility; outside → model marks dataQuality "suspect" (contract v0.1.1).
+
+signals:
+  rhr_bpm:
+    unit: bpm
+    v1: required
+    meaning: nightly resting heart rate (overnight average)
+    sim_person_baseline_range: [48, 68]        # per-crewmember preflight median
+    sim_day_to_day_sd: 1.5                      # within-person nightly noise
+    label: engineering assumption
+    support: "Alavi2022 Ext. Data: median overnight-RHR range over 3 months ≈ 3 bpm; SD of medians 0.8 (civilians). Supports small within-person noise."
+    plausible: [25, 200]
+    min_scale: 1.5                              # A6 — floor on robust scale
+  hrv_rmssd_ms:
+    unit: ms
+    v1: required
+    meaning: nightly RMSSD
+    sim_person_baseline_range: [30, 90]
+    sim_day_to_day_cv: 0.15
+    label: engineering assumption
+    support: "None verified; large inter-individual spread is general physiology knowledge (unverified)."
+    plausible: [3, 300]
+    min_scale: 5
+    missing_rule: "may be missing; never replaced by 0"
+  skin_temp_delta_c:
+    unit: degC deviation from personal reference
+    v1: required
+    sim_person_baseline: 0.0
+    sim_day_to_day_sd: 0.15
+    label: engineering assumption
+    support: "Li2017 uses skin temperature as a wearable signal; magnitude not yet verified."
+    plausible: [-3, 3]
+    min_scale: 0.1
+  sleep_hours:
+    unit: h
+    v1: required
+    sim_person_baseline_range: [6.0, 7.2]
+    sim_day_to_day_sd: 0.6
+    label: evidence-backed (range) / engineering assumption (noise)
+    support: "FlynnEvans2016: ISS mean sleep 6.4 ± 1.2 h (aligned) vs 5.4 ± 1.4 h (misaligned) by actigraphy, n=21. Barger2014: in-flight sleep ≈ 6 h (verify exact figure in text)."
+    plausible: [0, 16]
+    min_scale: 0.3
+  symptoms:
+    type: Symptom[] (contract enum)
+    v1: required
+    z_scored: false
+    rule: "categorical; [] with checkin_completed=true means reported none"
+  spe_warning:
+    type: boolean (RadiationEvent)
+    v1: required
+    z_scored: false
+    support: "OCHMO-TB-020: SPE alerting so crew can seek shelter. Timing realism from DONKI SEP events (observed near Earth)."
+  dose_rate_msv_h:
+    unit: mSv/h (RadiationEvent sample)
+    v1: required for storm event
+    sim_background: "1.84/24 ≈ 0.077 mSv/h (Mars cruise GCR)"
+    label: evidence-backed
+    support: "Zeitlin2013: cruise GCR dose-equivalent 1.84 ± 0.33 mSv/day."
+  daily_dose_msv:
+    unit: mSv/day
+    v1: required
+    derived: "integral of dose_rate samples over the day (A8); cumulative = sum of daily"
+    sim_background: 1.84
+    label: evidence-backed
+    support: "Zeitlin2013 (cruise); NASA-STD-3001 V1C p.45–46 design rate <1.3 mSv/day shielded, ≈1.5 unshielded (solar min). Use 1.84 measured; note vehicle-dependence."
+  prior_career_dose_msv:
+    unit: mSv
+    v1: optional context
+    rule: "null = unknown; never assumed 0"
+    career_limit: 600   # evidence-backed, NASA-STD-3001 V1C [V1 4030] p.40
+  pvt_mean_rt_ms: {unit: ms, v1: optional, label: unverified, note: "PVT-inspired browser test, not a validated instrument"}
+  pvt_lapses: {unit: count, v1: optional, label: evidence-backed definition, support: "Basner2011: PVT-B lapse = RT > 355 ms"}
+  mood_1to5: {unit: ordinal, v1: optional, z_scored: false}
+  stress_1to5: {unit: ordinal, v1: optional, z_scored: false}
+  exercise_minutes: {unit: min/day, v1: later}
+  co2_ppm: {unit: ppm, v1: later}
+
+renamed_from_old_docs: {rhr: rhr_bpm, hrv_rmssd: hrv_rmssd_ms, skin_temp_delta: skin_temp_delta_c, sleep_h: sleep_hours, pvt_rt_ms: pvt_mean_rt_ms, dose_msv: daily_dose_msv, mood: mood_1to5, stress: stress_1to5, exercise_min: exercise_minutes}

@@ -1,0 +1,134 @@
+[
+  {
+    "assumptionIds": [
+      "A6",
+      "A7"
+    ],
+    "crewId": "C2",
+    "dataQuality": "valid",
+    "evidence": [
+      {
+        "baseline": 52.39638741887276,
+        "direction": "up",
+        "signalId": "rhr_bpm",
+        "unit": "bpm",
+        "value": 50.91545111016809,
+        "z": -0.5868782830261079
+      },
+      {
+        "baseline": 84.8109836976917,
+        "direction": "down",
+        "signalId": "hrv_rmssd_ms",
+        "unit": "ms",
+        "value": 97.90289103221363,
+        "z": 1.7923077973565713
+      },
+      {
+        "baseline": 0.012170255236295854,
+        "direction": "up",
+        "signalId": "skin_temp_delta_c",
+        "unit": "degC deviation from personal reference",
+        "value": -0.2444086660332191,
+        "z": -1.9427276832589362
+      },
+      {
+        "signalId": "rhr_bpm",
+        "unit": "info-only: multi-signal agreement (M5); never changes status",
+        "value": "agree"
+      }
+    ],
+    "missionDay": 1,
+    "moduleId": "physiological_change",
+    "reason": "M3 / nominal; rhr_bpm=50.915 bpm; baseline=52.396; delta=-1.481; z=-0.587 | hrv_rmssd_ms=97.903 ms; baseline=84.811; delta=+13.092; z=+1.792 | skin_temp_delta_c=-0.244 degC deviation from personal reference; baseline=0.012; delta=-0.257; z=-1.943; statistic={'ewma': -0.11737565660522159, 'threshold': 1.0}; no symptoms reported; RHR and HRV share a wearable source; deviations are not independent confirmations",
+    "sourceIds": [],
+    "status": "nominal"
+  },
+  {
+    "assumptionIds": [
+      "A6",
+      "A7"
+    ],
+    "crewId": "C2",
+    "dataQuality": "valid",
+    "evidence": [
+      {
+        "baseline": 52.39638741887276,
+        "direction": "up",
+        "signalId": "rhr_bpm",
+        "unit": "bpm",
+        "value": 60.049728890957276,
+        "z": 3.0329325279883985
+      },
+      {
+        "baseline": 84.8109836976917,
+        "direction": "down",
+        "signalId": "hrv_rmssd_ms",
+        "unit": "ms",
+        "value": 79.0481007579348,
+        "z": -0.7889499798813392
+      },
+      {
+        "baseline": 0.012170255236295854,
+        "direction": "up",
+        "signalId": "skin_temp_delta_c",
+        "unit": "degC deviation from personal reference",
+        "value": 0.09709040984336267,
+        "z": 0.6429863154989385
+      },
+      {
+        "signalId": "rhr_bpm",
+        "unit": "info-only: multi-signal agreement (M5); never changes status",
+        "value": "agree"
+      }
+    ],
+    "missionDay": 41,
+    "moduleId": "physiological_change",
+    "reason": "M3 / nominal; rhr_bpm=60.050 bpm; baseline=52.396; delta=+7.653; z=+3.033 | hrv_rmssd_ms=79.048 ms; baseline=84.811; delta=-5.763; z=-0.789 | skin_temp_delta_c=0.097 degC deviation from personal reference; baseline=0.012; delta=+0.085; z=+0.643; statistic={'ewma': 0.8991490926219601, 'threshold': 1.0}; no symptoms reported; RHR and HRV share a wearable source; deviations are not independent confirmations",
+    "sourceIds": [],
+    "status": "nominal"
+  },
+  {
+    "assumptionIds": [
+      "A6",
+      "A7"
+    ],
+    "crewId": "C2",
+    "dataQuality": "valid",
+    "evidence": [
+      {
+        "baseline": 52.39638741887276,
+        "direction": "up",
+        "signalId": "rhr_bpm",
+        "unit": "bpm",
+        "value": 54.26892308458366,
+        "z": 0.7420646721524308
+      },
+      {
+        "baseline": 84.8109836976917,
+        "direction": "down",
+        "signalId": "hrv_rmssd_ms",
+        "unit": "ms",
+        "value": 77.83269956048342,
+        "z": -0.9553407881453496
+      },
+      {
+        "baseline": 0.012170255236295854,
+        "direction": "up",
+        "signalId": "skin_temp_delta_c",
+        "unit": "degC deviation from personal reference",
+        "value": -0.02324316299325664,
+        "z": -0.26813826955454007
+      },
+      {
+        "signalId": "rhr_bpm",
+        "unit": "info-only: multi-signal agreement (M5); never changes status",
+        "value": "agree"
+      }
+    ],
+    "missionDay": 42,
+    "moduleId": "physiological_change",
+    "reason": "M3 / nominal; rhr_bpm=54.269 bpm; baseline=52.396; delta=+1.873; z=+0.742 | hrv_rmssd_ms=77.833 ms; baseline=84.811; delta=-6.978; z=-0.955 | skin_temp_delta_c=-0.023 degC deviation from personal reference; baseline=0.012; delta=-0.035; z=-0.268; statistic={'ewma': 0.8677322085280543, 'threshold': 1.0}; symptoms logged: sore_throat, fatigue; RHR and HRV share a wearable source; deviations are not independent confirmations",
+    "sourceIds": [],
+    "status": "nominal"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "fixedBeforeOutcomeAnalysis": true,
+  "startedUtc": "2026-11-15T19:53:13.422654+00:00",
+  "configHash": "03632b3d13fbcc888a5bed3511939694989ed8a72c9e594c230035279bc2d7e0",
+  "sourceHashes": {
+    "research/data/raw/stanford_covid_wearables_mishra2020/COVID-19-Wearables.zip": "52ca976e6c08daa0cf34b6b82f4fc69b8894c1eef66e598efa40197df4e380f4",
+    "research/papers/Mishra2020_SupplementaryTables.xlsx": "cf89b4b7e6209905d48adce5c4a56d76ea661e4ebd7b439636df46adc5c198ec"
+  },
+  "protocol": {
+    "nightly_rhr": "Mean HR, file-local 00:00\u201306:59, current and preceding ten minute step bins all explicitly zero; >=60 distinct qualifying HR minutes. Missing steps are not zero.",
+    "duplicates": "Floor timestamps to minute; duplicate HR averaged, duplicate steps max; invalid numeric/timestamps excluded. No overnight or detector imputation.",
+    "cases": "Table 3 Category exactly COVID-19, first listed valid symptom timestamp (original cell order, not sorted). Other dates are not searched for better performance.",
+    "case_baseline": "First 14 calendar nights starting at first HR record date, including partial/missing nights; >=10 plausible RHR nights; final baseline date <= onset minus seven days. No later-window search.",
+    "control_baseline": "Participants whose base ID appears in neither Table 3 nor Table 4; first 14 plausible valid nightly RHR values; evaluate only after the last selected baseline date.",
+    "identity": "Match base participant ID before any underscore; repeated illness files are excluded from controls together. Standard *_hr.csv files only; *_longterm files not added as independent participants.",
+    "detector": "Unchanged frozen M3; median / max(1.4826*MAD,1.5 bpm) fixed baseline; lambda .2, control_sigma 3 (EWMA threshold 1); unknown nights reset state. No symptoms, HRV or temperature inferred.",
+    "primary": "Any watch in inclusive relative days -7..+7; first watch within that window; by-onset metric uses the same window through day 0. A watch may be ongoing from before the window.",
+    "false_alerts": "Contiguous watch episodes on calendar nights after baseline and before day -7 for cases, all post-baseline for controls; unknown breaks an episode. Denominator: valid/evaluable person-nights; no-reported-illness does not mean confirmed healthy.",
+    "bootstrap": {
+      "unit": "participant",
+      "samples": 5000,
+      "seed": 20261115,
+      "interval": "percentile 95%; summed event/exposure ratio for false alerts"
+    },
+    "no_tuning": true
+  }
+}

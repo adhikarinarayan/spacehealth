@@ -1,0 +1,124 @@
+[
+  {
+    "candidate": "M0",
+    "detected": 0,
+    "runs": 3,
+    "median_first_watch_day": null,
+    "n1_watches": 0,
+    "n1_acts": 0,
+    "false_alerts": 0,
+    "evaluable_crew_days": 2112,
+    "false_alerts_per100_crew_days": 0.0,
+    "verdict": "discarded",
+    "discard_reasons": [
+      "S2 missed by symptom day in 3/3 seeds"
+    ],
+    "skipped_checkin_checks_pass": true
+  },
+  {
+    "candidate": "M1",
+    "detected": 0,
+    "runs": 3,
+    "median_first_watch_day": null,
+    "n1_watches": 0,
+    "n1_acts": 0,
+    "false_alerts": 0,
+    "evaluable_crew_days": 2112,
+    "false_alerts_per100_crew_days": 0.0,
+    "verdict": "discarded",
+    "discard_reasons": [
+      "S2 missed by symptom day in 3/3 seeds"
+    ],
+    "skipped_checkin_checks_pass": true
+  },
+  {
+    "candidate": "M1b",
+    "detected": 1,
+    "runs": 3,
+    "median_first_watch_day": 43,
+    "n1_watches": 2,
+    "n1_acts": 0,
+    "false_alerts": 2,
+    "evaluable_crew_days": 2112,
+    "false_alerts_per100_crew_days": 0.0946969696969697,
+    "verdict": "discarded",
+    "discard_reasons": [
+      "S2 missed by symptom day in 2/3 seeds"
+    ],
+    "skipped_checkin_checks_pass": true
+  },
+  {
+    "candidate": "M2",
+    "detected": 3,
+    "runs": 3,
+    "median_first_watch_day": 42,
+    "n1_watches": 10,
+    "n1_acts": 0,
+    "false_alerts": 272,
+    "evaluable_crew_days": 2112,
+    "false_alerts_per100_crew_days": 12.878787878787879,
+    "verdict": "kept for next-stage review",
+    "discard_reasons": [],
+    "skipped_checkin_checks_pass": true
+  },
+  {
+    "candidate": "M3",
+    "detected": 3,
+    "runs": 3,
+    "median_first_watch_day": 42,
+    "n1_watches": 10,
+    "n1_acts": 0,
+    "false_alerts": 20,
+    "evaluable_crew_days": 2112,
+    "false_alerts_per100_crew_days": 0.946969696969697,
+    "verdict": "kept for next-stage review",
+    "discard_reasons": [],
+    "skipped_checkin_checks_pass": true
+  },
+  {
+    "candidate": "M4",
+    "detected": 1,
+    "runs": 3,
+    "median_first_watch_day": 43,
+    "n1_watches": 3,
+    "n1_acts": 0,
+    "false_alerts": 3,
+    "evaluable_crew_days": 2112,
+    "false_alerts_per100_crew_days": 0.14204545454545456,
+    "verdict": "discarded",
+    "discard_reasons": [
+      "S2 missed by symptom day in 2/3 seeds"
+    ],
+    "skipped_checkin_checks_pass": true
+  },
+  {
+    "candidate": "M5",
+    "detected": 2,
+    "runs": 3,
+    "median_first_watch_day": 42,
+    "n1_watches": 2,
+    "n1_acts": 0,
+    "false_alerts": 2,
+    "evaluable_crew_days": 1587,
+    "false_alerts_per100_crew_days": 0.1260239445494644,
+    "verdict": "kept for next-stage review",
+    "discard_reasons": [],
+    "skipped_checkin_checks_pass": true
+  },
+  {
+    "candidate": "M6",
+    "detected": 0,
+    "runs": 3,
+    "median_first_watch_day": null,
+    "n1_watches": 0,
+    "n1_acts": 0,
+    "false_alerts": 3,
+    "evaluable_crew_days": 1587,
+    "false_alerts_per100_crew_days": 0.1890359168241966,
+    "verdict": "discarded",
+    "discard_reasons": [
+      "S2 missed by symptom day in 3/3 seeds"
+    ],
+    "skipped_checkin_checks_pass": true
+  }
+]

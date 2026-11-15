@@ -1,0 +1,41 @@
+{
+  "case": "illustrative",
+  "configHash": "03632b3d13fbcc888a5bed3511939694989ed8a72c9e594c230035279bc2d7e0",
+  "files": {
+    "cards.json": "532694d09c34dd3f82200728e4d7911c1d7f29b2a661e9e2831db9dca5dadc3a",
+    "indicators.json": "c633bded63564647805d794b7b1cb7e05a48a81b9f8636fb05944353e08075dc",
+    "mission.json": "dfa553ce4176ab8d61e88c8f9077b63c94767f1d6c27e9b2963724e25c1f4cd0",
+    "validation.json": "16335d92187e810df5a8ef849ec58ea51fcd510c9956c9f01393e45f0fb8a14e"
+  },
+  "holdout_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "m5": "info-only",
+  "model": "M3-frozen-v1",
+  "release_case": {
+    "effect_scale": 0.8,
+    "noise": "gaussian"
+  },
+  "seed": 1002,
+  "selectedAfterHoldout": true,
+  "selectionRule": "Gaussian noise, effect scale 0.8 (same as the pre-selected case); S2 first watch = day 41 (typical, not the best day 40); S4 watch by day 97 and sleep-debt act reached; all other scenarios pass; choose the lowest qualifying holdout seed (1002)."
+}

@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://spacehealth.local/contracts/indicator.schema.json",
+  "type": "object",
+  "properties": {
+    "crewId": {
+      "enum": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ]
+    },
+    "missionDay": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 180,
+      "not": {
+        "exclusiveMinimum": 1.7976931348623157e+308
+      }
+    },
+    "moduleId": {
+      "enum": [
+        "sleep_alertness",
+        "physiological_change",
+        "radiation"
+      ]
+    },
+    "status": {
+      "enum": [
+        "nominal",
+        "watch",
+        "act",
+        "unknown"
+      ]
+    },
+    "dataQuality": {
+      "enum": [
+        "valid",
+        "missing",
+        "insufficient",
+        "suspect"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "pattern": "[Ii][Nn][Ff][Ee][Cc][Tt][Ii][Oo][Nn] [Dd][Ee][Tt][Ee][Cc][Tt][Ee][Dd]"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "signalId": {
+            "enum": [
+              "rhr_bpm",
+              "hrv_rmssd_ms",
+              "skin_temp_delta_c",
+              "sleep_hours",
+              "symptoms",
+              "spe_warning",
+              "dose_rate_msv_h",
+              "daily_dose_msv",
+              "prior_career_dose_msv",
+              "pvt_mean_rt_ms",
+              "pvt_lapses",
+              "mood_1to5",
+              "stress_1to5",
+              "exercise_minutes",
+              "co2_ppm"
+            ]
+          },
+          "value": {
+            "type": [
+              "number",
+              "boolean",
+              "string",
+              "null"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          },
+          "baseline": {
+            "type": "number",
+            "not": {
+              "exclusiveMinimum": 1.7976931348623157e+308
+            }
+          },
+          "z": {
+            "type": "number",
+            "not": {
+              "exclusiveMinimum": 1.7976931348623157e+308
+            }
+          },
+          "persistenceDays": {
+            "type": "integer",
+            "minimum": 0,
+            "not": {
+              "exclusiveMinimum": 1.7976931348623157e+308
+            }
+          },
+          "direction": {
+            "enum": [
+              "up",
+              "down"
+            ]
+          }
+        },
+        "required": [
+          "signalId",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "cardId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "assumptionIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "crewId",
+    "missionDay",
+    "moduleId",
+    "status",
+    "dataQuality",
+    "reason",
+    "evidence",
+    "sourceIds",
+    "assumptionIds"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unknown"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "dataQuality": {
+            "enum": [
+              "missing",
+              "insufficient"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "dataQuality": {
+            "enum": [
+              "valid",
+              "suspect"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "configHash": "03632b3d13fbcc888a5bed3511939694989ed8a72c9e594c230035279bc2d7e0",
+  "files": {
+    "cards.json": "532694d09c34dd3f82200728e4d7911c1d7f29b2a661e9e2831db9dca5dadc3a",
+    "indicators.json": "1d3accec260c05c7f1429eec718f8532b649872798ddf36b53d18f68e25f3255",
+    "mission.json": "0310e040110f0e5ff32322428f7fcc6191016735a156319af1118e19c0e3b1dd",
+    "validation.json": "d87a58bb3accfe2403e3d99955cf35c9861d78584c9effded06482cba928d374"
+  },
+  "holdout_seeds": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019
+  ],
+  "m5": "info-only",
+  "model": "M3-frozen-v1",
+  "release_case": {
+    "effect_scale": 0.8,
+    "noise": "gaussian"
+  },
+  "seed": 1000
+}

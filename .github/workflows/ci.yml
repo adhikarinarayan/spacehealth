@@ -1,0 +1,49 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  model:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: model
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: model/requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - name: Restore recorded release fixtures for clean-checkout tests
+        run: python ../.github/workflows/prepare_model_outputs.py
+      - name: Explain optional data availability
+        run: |
+          echo '::notice::Stanford ZIP and papers are not redistributed. Full real-data replay is skipped in CI; synthetic protocol tests still run and need neither source file nor openpyxl.'
+      - run: python -m pytest -q
+        env:
+          MPLCONFIGDIR: ${{ runner.temp }}/spacehealth-matplotlib
+  dashboard:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26.13.1'
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci
+      - run: npm test -- --run
+      - name: Build and test root hosting
+        run: npm run build
+      - name: Build and test repository subpath hosting
+        run: npm run build
+        env:
+          BASE_PATH: /spacehealth/

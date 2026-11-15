@@ -1,0 +1,9 @@
+{
+  "participantId": "A0NVTRV",
+  "night": "2023-10-28",
+  "independentQualifiedMinutes": 224,
+  "independentMeanBpm": 81.80929914579467,
+  "pipelineMeanBpm": 81.8092991457947,
+  "difference": 2.842170943040401e-14,
+  "method": "stdlib CSV parsing; explicit lookup of all eleven step minutes; no pandas rolling/grouping"
+}
